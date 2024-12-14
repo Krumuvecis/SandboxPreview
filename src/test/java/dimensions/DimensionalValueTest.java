@@ -5,11 +5,11 @@ import java.util.List;
 import static consoleUtils.SimplePrinting.printLine;
 
 //
-public abstract class DimensionalValueTest<T extends DimensionalValue<U>, U extends Enum<U> & DimensionalUnit> {
+abstract class DimensionalValueTest<T extends DimensionalValue<U>, U extends Enum<U> & DimensionalUnit> {
     private static final String INDENT = "  ";
 
     //
-    public DimensionalValueTest(T dimensionalValue, List<U> units) {
+    DimensionalValueTest(T dimensionalValue, List<U> units) {
         printLine("Testing " + dimensionalValue.getDimensionName() + ", " + dimensionalValue.getValueAndShortUnit());
         printConvertedLines(dimensionalValue, units);
         printLine("");

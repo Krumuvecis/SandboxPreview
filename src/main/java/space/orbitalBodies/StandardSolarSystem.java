@@ -14,7 +14,7 @@ public final class StandardSolarSystem {
             DISTANCE_SUN_MERCURY = new Distance(0.38709893, DistanceUnit.AU),
             DISTANCE_SUN_VENUS = new Distance(0.72333199, DistanceUnit.AU),
             DISTANCE_SUN_EARTH = new Distance(1.00000011, DistanceUnit.AU),
-            DISTANCE_EARTH_MOON = new Distance(1, DistanceUnit.KM),
+            DISTANCE_EARTH_MOON = new Distance(384400, DistanceUnit.KM),
             ORBITAL_STATION_LEO_HEIGHT = new Distance(400, DistanceUnit.KM),
             ORBITAL_STATION_MOON_HEIGHT = new Distance(100, DistanceUnit.KM),
             DISTANCE_SUN_MARS = new Distance(1.52366231, DistanceUnit.AU),

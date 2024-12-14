@@ -5,7 +5,6 @@ import dimensions.mass.Mass;
 import dimensions.distance.DistanceUnit;
 import dimensions.distance.Distance;
 import space.Orbit;
-import space.orbitalBodies.OrbitalBody;
 import space.orbitalBodies.PlanetaryParameters;
 import space.orbitalBodies.MajorOrbitalBody;
 
@@ -16,7 +15,7 @@ public final class Moon extends MajorOrbitalBody {
     private static final Distance RADIUS = new Distance(1738.1, DistanceUnit.KM); //equatorial
 
     //
-    public Moon(OrbitalBody parent, Orbit orbit) {
-        super(NAME, parent, orbit, new PlanetaryParameters(MASS, RADIUS));
+    public Moon(MajorOrbitalBody parent, Orbit orbit) {
+        super(NAME, parent, orbit, MASS, new PlanetaryParameters(RADIUS));
     }
 }

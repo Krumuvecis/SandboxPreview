@@ -2,19 +2,27 @@ package space.orbitalBodies;
 
 import dimensions.distance.DistanceUnit;
 import dimensions.distance.Distance;
+import dimensions.mass.Mass;
 import space.Orbit;
 import space.satelliteContainer.SatelliteContainer;
 
 //
 public class MajorOrbitalBody extends OrbitalBody {
     public final SatelliteContainer satellites; //access satellites through this container
+    private final Mass mass;
     public final PlanetaryParameters planetaryParameters;
 
     //
-    public MajorOrbitalBody(String name, OrbitalBody parent, Orbit orbit, PlanetaryParameters planetaryParameters) {
+    public MajorOrbitalBody(String name, MajorOrbitalBody parent, Orbit orbit, Mass mass, PlanetaryParameters planetaryParameters) {
         super(name, parent, orbit);
         satellites = new SatelliteContainer();
+        this.mass = mass;
         this.planetaryParameters = planetaryParameters;
+    }
+
+    //
+    public Mass getMass() {
+        return mass;
     }
 
     public Distance getHillRadius(DistanceUnit unit) {

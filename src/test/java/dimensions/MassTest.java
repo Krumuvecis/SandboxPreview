@@ -1,8 +1,9 @@
-package dimensions.mass;
+package dimensions;
 
 import java.util.ArrayList;
 
-import dimensions.DimensionalValueTest;
+import dimensions.mass.MassUnit;
+import dimensions.mass.Mass;
 
 //
 final class MassTest extends DimensionalValueTest<Mass, MassUnit> {

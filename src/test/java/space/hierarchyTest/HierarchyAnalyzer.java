@@ -33,7 +33,7 @@ class HierarchyAnalyzer {
         if (planetaryParameters == null) {
             printLine(majorString + "planetary parameters: " + NULL_VALUE_STRING);
         } else {
-            printLine(majorString + getMassInfo(planetaryParameters.getMass()) + SEPARATOR_COMMA + getRadiusInfo(planetaryParameters.getRadius()));
+            printLine(majorString + getMassInfo(body.getMass()) + SEPARATOR_COMMA + getRadiusInfo(planetaryParameters.getRadius()));
         }
 
         for (MajorOrbitalBody satellite : body.satellites.getMajorSatellites()) {

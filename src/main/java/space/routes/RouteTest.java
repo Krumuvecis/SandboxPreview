@@ -5,6 +5,8 @@ import java.util.ArrayList;
 
 import static consoleUtils.SimplePrinting.printLine;
 
+import dimensions.distance.Distance;
+import space.Orbit;
 import space.orbitalBodies.OrbitalBody;
 import space.orbitalBodies.StandardSolarSystem;
 
@@ -149,8 +151,7 @@ public class RouteTest {
 
     enum ManeuverDirection {
         INWARDS,
-        OUTWARDS,
-        NEIGHBORS
+        OUTWARDS
     }
 
     static abstract class RouteManeuver {
@@ -166,20 +167,79 @@ public class RouteTest {
         public ManeuverDirection getDirection() {
             return direction;
         }
+
+        //Hohmann
+        public abstract LocationAndOrbit getTransferOrbit();
     }
 
     static class RootTriangleManeuver extends RouteManeuver {
         OrbitalBody commonRoot;
 
         RootTriangleManeuver(OrbitalBody commonRoot, OrbitalBody start, OrbitalBody target) {
-            super(start, target, ManeuverDirection.NEIGHBORS);
+            super(start, target, getDirection(start, target));
             this.commonRoot = commonRoot;
+        }
+
+        private static ManeuverDirection getDirection(OrbitalBody start, OrbitalBody target) {
+            ManeuverDirection direction;
+
+            //if (start.orbit.semiMajorAxis)
+
+            /*return direction;*/
+            return null;
+        }
+
+        //Hohmann
+        @Override
+        public LocationAndOrbit getTransferOrbit() {
+            //TODO: account for Hill's sphere and eccentricity, etc.
+
+            Distance
+                    startDistance, targetDistance,
+                    periapsis, apoapsis;
+
+
+            /*Orbit transferOrbit = Orbit.getEllipticOrbit(periapsis, apoapsis);
+            return new LocationAndOrbit(commonRoot, transferOrbit);*/
+            return null;
         }
     }
 
     static class SimpleManeuver extends RouteManeuver {
         SimpleManeuver(OrbitalBody start, OrbitalBody target, ManeuverDirection direction) {
             super(start, target, direction);
+        }
+
+        //Hohmann
+        //  if moon->earth, then moon
+        //  if earth->moon, then earth
+        //  thus always start as location
+        @Override
+        public LocationAndOrbit getTransferOrbit() {
+
+            Orbit transferOrbit;
+
+            /*return new LocationAndOrbit(start, transferOrbit);*/
+            return null;
+        }
+    }
+
+    @SuppressWarnings("ClassCanBeRecord")
+    static class LocationAndOrbit {
+        private final OrbitalBody body;
+        private final Orbit orbit;
+
+        LocationAndOrbit(OrbitalBody body, Orbit orbit) {
+            this.body = body;
+            this.orbit = orbit;
+        }
+
+        public OrbitalBody getBody() {
+            return body;
+        }
+
+        public Orbit getOrbit() {
+            return orbit;
         }
     }
 }

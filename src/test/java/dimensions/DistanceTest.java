@@ -1,8 +1,9 @@
-package dimensions.distance;
+package dimensions;
 
 import java.util.ArrayList;
 
-import dimensions.DimensionalValueTest;
+import dimensions.distance.DistanceUnit;
+import dimensions.distance.Distance;
 
 //
 final class DistanceTest extends DimensionalValueTest<Distance, DistanceUnit> {
