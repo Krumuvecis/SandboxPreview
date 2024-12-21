@@ -1,14 +1,17 @@
 package space.orbitalBodies.particularMinors;
 
-import space.Orbit;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import space.orbits.OrbitInterface;
 import space.orbitalBodies.MajorOrbitalBody;
 
 //
 public final class OrbitalStation_Moon extends OrbitalStation {
-    private static final String NAME = "Moon orbital station";
+    private static final @NotNull String NAME = "Moon orbital station";
 
     //
-    public OrbitalStation_Moon(MajorOrbitalBody parent, Orbit orbit) {
+    public OrbitalStation_Moon(@Nullable MajorOrbitalBody parent, @Nullable OrbitInterface orbit) {
         super(NAME, parent, orbit);
     }
 }

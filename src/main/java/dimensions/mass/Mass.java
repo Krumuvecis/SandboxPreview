@@ -3,11 +3,14 @@ package dimensions.mass;
 import java.util.Collections;
 import java.util.Map;
 
+import org.jetbrains.annotations.NotNull;
+
 import dimensions.ConversionRatiosInitializer;
 import dimensions.DimensionalValue;
 
 //
 public final class Mass extends DimensionalValue<MassUnit> implements ConversionRatiosInitializer<MassUnit> {
+    private static final @NotNull MassUnit SI_UNIT = MassUnit.KG;
     private static final double
             KG_TO_G = 1000,
             T_TO_KG = 1000,
@@ -23,9 +26,14 @@ public final class Mass extends DimensionalValue<MassUnit> implements Conversion
         CONVERSION_RATIOS = Collections.unmodifiableMap(ratios);
     }
 
-    //
+    //custom units
     public Mass(double value, MassUnit unit) {
-        super("Mass", value, unit, CONVERSION_RATIOS);
+        super("Mass", SI_UNIT, value, unit, CONVERSION_RATIOS);
+    }
+
+    //default units
+    public Mass(double value) {
+        this(value, SI_UNIT);
     }
 
     //for conversion ratio initialization

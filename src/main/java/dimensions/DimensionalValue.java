@@ -5,6 +5,7 @@ import java.util.Map;
 //
 public abstract class DimensionalValue<T extends Enum<T> & DimensionalUnit> {
     private final String dimensionName;
+    private final T unitSI;
     private final double value;
     private final T unit;
     private final Map<T, Map<T, Double>> conversionRatios;
@@ -17,10 +18,11 @@ public abstract class DimensionalValue<T extends Enum<T> & DimensionalUnit> {
     }
 
     //
-    public DimensionalValue(String dimensionName,
+    public DimensionalValue(String dimensionName, T unitSI,
                             double value, T unit,
                             Map<T, Map<T, Double>> conversionRatios) {
         this.dimensionName = dimensionName;
+        this.unitSI = unitSI;
         this.value = value;
         this.unit = unit;
         this.conversionRatios = conversionRatios;
@@ -29,6 +31,11 @@ public abstract class DimensionalValue<T extends Enum<T> & DimensionalUnit> {
     //
     public final String getDimensionName() {
         return dimensionName;
+    }
+
+    //
+    public final T getUnitSI() {
+        return unitSI;
     }
 
     //
@@ -51,6 +58,11 @@ public abstract class DimensionalValue<T extends Enum<T> & DimensionalUnit> {
             throw new ConversionNotDefinedException(dimensionName, this.unit, unit);
         }
         return this.value * conversionRatio;
+    }
+
+    //
+    public final double getSI() {
+        return get(unitSI);
     }
 
     //for output purposes, custom unit

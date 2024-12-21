@@ -1,13 +1,16 @@
 package space.orbitalBodies.particularMinors;
 
-import space.Orbit;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import space.orbits.OrbitInterface;
 import space.orbitalBodies.MajorOrbitalBody;
 import space.orbitalBodies.MinorOrbitalBody;
 
 //
 public class OrbitalStation extends MinorOrbitalBody {
     //
-    public OrbitalStation(String name, MajorOrbitalBody parent, Orbit orbit) {
+    public OrbitalStation(@NotNull String name, @Nullable MajorOrbitalBody parent, @Nullable OrbitInterface orbit) {
         super(name, parent, orbit);
     }
 }

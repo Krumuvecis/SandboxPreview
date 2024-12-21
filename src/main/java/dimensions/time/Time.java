@@ -3,11 +3,14 @@ package dimensions.time;
 import java.util.Collections;
 import java.util.Map;
 
+import org.jetbrains.annotations.NotNull;
+
 import dimensions.ConversionRatiosInitializer;
 import dimensions.DimensionalValue;
 
 //
 public final class Time extends DimensionalValue<TimeUnit> implements ConversionRatiosInitializer<TimeUnit> {
+    private static final @NotNull TimeUnit SI_UNIT = TimeUnit.S;
     private static final double
             S_TO_MS = 1000,
             MIN_TO_S = 60,
@@ -25,9 +28,14 @@ public final class Time extends DimensionalValue<TimeUnit> implements Conversion
         CONVERSION_RATIOS = Collections.unmodifiableMap(ratios);
     }
 
-    //
+    //custom units
     public Time(double value, TimeUnit unit) {
-        super("Time", value, unit, CONVERSION_RATIOS);
+        super("Time", SI_UNIT, value, unit, CONVERSION_RATIOS);
+    }
+
+    //default units
+    public Time(double value) {
+        this(value, SI_UNIT);
     }
 
     //for conversion ratio initialization

@@ -1,4 +1,4 @@
-package space.orbitalBodies.particularMajors;
+package space.orbitalBodies.particularMajors.earth;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -13,13 +13,13 @@ import space.orbitalBodies.MajorOrbitalBody;
 import space.orbitalBodies.Planetoid;
 
 //
-public final class Sun extends Planetoid {
-    private static final @NotNull String NAME = "Sun";
-    private static final @NotNull Mass MASS = new Mass(1, MassUnit.SOLAR_MASS);
-    private static final @NotNull Distance RADIUS = new Distance(695508, DistanceUnit.KM); //equatorial
+public final class Moon extends Planetoid {
+    private static final @NotNull String NAME = "Moon";
+    private static final @NotNull Mass MASS = new Mass(7.346 * Math.pow(10, 22), MassUnit.KG);
+    private static final @NotNull Distance RADIUS = new Distance(1738.1, DistanceUnit.KM); //equatorial
 
     //
-    public Sun(@Nullable MajorOrbitalBody parent, @Nullable OrbitInterface orbit) {
+    public Moon(@Nullable MajorOrbitalBody parent, @Nullable OrbitInterface orbit) {
         super(NAME, parent, orbit, MASS, new PlanetaryParameters(RADIUS));
     }
 }

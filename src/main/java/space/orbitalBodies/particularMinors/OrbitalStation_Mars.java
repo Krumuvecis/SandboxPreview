@@ -1,14 +1,17 @@
 package space.orbitalBodies.particularMinors;
 
-import space.Orbit;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import space.orbits.OrbitInterface;
 import space.orbitalBodies.MajorOrbitalBody;
 
 //
 public final class OrbitalStation_Mars extends OrbitalStation {
-    private static final String NAME = "Mars orbital station";
+    private static final @NotNull String NAME = "Mars orbital station";
 
     //
-    public OrbitalStation_Mars(MajorOrbitalBody parent, Orbit orbit) {
+    public OrbitalStation_Mars(@Nullable MajorOrbitalBody parent, @Nullable OrbitInterface orbit) {
         super(NAME, parent, orbit);
     }
 }
