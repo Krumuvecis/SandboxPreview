@@ -1,11 +1,13 @@
 package rotors.graphics;
 
-import ThreadAbstraction.AbstractUpdater;
-import delayCalculator.delayOptions.DelayOptions;
 import delayCalculator.delayOptions.DelayType;
+import delayCalculator.delayOptions.DelayOptions;
+import ThreadAbstraction.AbstractUpdater;
 import org.jetbrains.annotations.NotNull;
 
-import javax.swing.*;
+import javax.swing.JFrame;
+import javax.swing.WindowConstants;
+import javax.swing.JPanel;
 import javax.swing.event.MouseInputListener;
 import java.awt.*;
 import java.awt.event.MouseEvent;
@@ -140,10 +142,10 @@ public class HabitatEditor {
 
     //
     static class MyMouseListener implements MouseMotionListener, MouseInputListener {
-        private final MouseManager mouseManager;
+        private final @NotNull MouseManager mouseManager;
 
         //
-        MyMouseListener(MouseManager mouseManager) {
+        MyMouseListener(@NotNull MouseManager mouseManager) {
             super();
             this.mouseManager = mouseManager;
         }
