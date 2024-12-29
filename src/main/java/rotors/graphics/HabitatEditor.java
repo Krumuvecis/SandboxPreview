@@ -16,6 +16,7 @@ import java.util.List;
 import static consoleUtils.SimplePrinting.printLine;
 
 public class HabitatEditor {
+    @SuppressWarnings("InstantiationOfUtilityClass")
     public static void main(String[] args) {
         new HabitatEditor();
     }
@@ -122,6 +123,7 @@ public class HabitatEditor {
         }
 
         //
+        @SuppressWarnings("unused")
         void mouseClicked(Point location, int button) {
             mouseMoved(location);
             TestData.points.add(getMouseLocation());
