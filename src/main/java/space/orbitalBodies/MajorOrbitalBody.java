@@ -79,7 +79,7 @@ public class MajorOrbitalBody extends AbstractOrbitalBody {
         return childMass / (childMass + getParentMass().getSI());
     }
 
-    private double getCubeRoot(double number) {
+    private static double getCubeRoot(double number) {
         return Math.pow(number, 1.0 / 3);
     }
 }

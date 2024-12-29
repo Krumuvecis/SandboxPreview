@@ -4,6 +4,7 @@ import dimensions.distance.Distance;
 import dimensions.mass.Mass;
 import dimensions.mass.MassUnit;
 import dimensions.time.Time;
+import human.ShipCrew;
 import org.jetbrains.annotations.NotNull;
 import space.orbitalBodies.abstractOrbitalBody.AbstractOrbitalBody;
 import space.routes.ManeuverRoute;

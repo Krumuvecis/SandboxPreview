@@ -17,7 +17,7 @@ import space.routes.ManeuverRoute;
 import space.routes.ManeuverRoute.HohmannRouteElement;
 
 //route test 2
-public class RouteTest2 {
+public class RouteTest {
     private static final String INDENT = "  ";
 
     //
@@ -25,17 +25,17 @@ public class RouteTest2 {
     public static void main(String[] args) {
         try {
             //new RouteTest2(StandardSolarSystem.ORBITAL_STATION_MOON, StandardSolarSystem.ORBITAL_STATION_LEO);
-            new RouteTest2(StandardSolarSystem.ORBITAL_STATION_LEO, StandardSolarSystem.ORBITAL_STATION_MOON);
+            new RouteTest(StandardSolarSystem.ORBITAL_STATION_LEO, StandardSolarSystem.ORBITAL_STATION_MOON);
             //new RouteTest2(StandardSolarSystem.ORBITAL_STATION_LEO, StandardSolarSystem.ORBITAL_STATION_MARS);
-            new RouteTest2(StandardSolarSystem.ORBITAL_STATION_MOON, StandardSolarSystem.ORBITAL_STATION_PHOBOS);
-            new RouteTest2(StandardSolarSystem.ORBITAL_STATION_MOON, StandardSolarSystem.ORBITAL_STATION_MERCURY);
+            new RouteTest(StandardSolarSystem.ORBITAL_STATION_MOON, StandardSolarSystem.ORBITAL_STATION_PHOBOS);
+            new RouteTest(StandardSolarSystem.ORBITAL_STATION_MOON, StandardSolarSystem.ORBITAL_STATION_MERCURY);
         } catch (@NotNull NullParentException | NotSameRootException e) {
             throw new RuntimeException(e);
         }
     }
 
     //
-    RouteTest2(@NotNull AbstractOrbitalBody start, @NotNull AbstractOrbitalBody target) throws NullParentException, NotSameRootException {
+    RouteTest(@NotNull AbstractOrbitalBody start, @NotNull AbstractOrbitalBody target) throws NullParentException, NotSameRootException {
         printIntro(start, target);
         if (start.getParent() == null || target.getParent() == null) {
             throw new NullParentException();

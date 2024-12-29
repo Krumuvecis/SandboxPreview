@@ -1,16 +1,15 @@
-package space.ships;
+package human;
 
 import dimensions.mass.MassUnit;
 import dimensions.mass.Mass;
 
 //
-class HumanRequirements {
-    static final double STANDARD_GRAVITY = 9.8; // m/s^2
-    Mass
+public class HumanRequirements {
+    public Mass
             dailyFoodConsumption,
             dailyWaterConsumption,
             luggagePerPerson;
-    double
+    public double
             privateAreaPerPerson,
             commonAreaPerPerson;
 
@@ -25,7 +24,7 @@ class HumanRequirements {
     }
 
     //
-    static class MilitaryRequirements extends HumanRequirements {
+    public static class MilitaryRequirements extends HumanRequirements {
         //
         MilitaryRequirements() {
             super(new Mass(5), new Mass(10), 10, 10, new Mass(1, MassUnit.T));
@@ -33,7 +32,7 @@ class HumanRequirements {
     }
 
     //
-    static class CivilianRequirements extends HumanRequirements {
+    public static class CivilianRequirements extends HumanRequirements {
         //
         CivilianRequirements() {
             super(new Mass(2), new Mass(10), 20, 20, new Mass(2, MassUnit.T));
@@ -41,7 +40,7 @@ class HumanRequirements {
     }
 
     //
-    static class LuxuryRequirements extends HumanRequirements {
+    public static class LuxuryRequirements extends HumanRequirements {
         //
         LuxuryRequirements() {
             super(new Mass(5), new Mass(20), 50, 50, new Mass(10, MassUnit.T));

@@ -1,4 +1,4 @@
-package space.ships;
+package human;
 
 import dimensions.mass.Mass;
 
@@ -8,12 +8,12 @@ public class ShipCrew {
     Map<HumanRequirements, Integer> crewComposition;
 
     //
-    ShipCrew(Map<HumanRequirements, Integer> crewComposition) {
+    public ShipCrew(Map<HumanRequirements, Integer> crewComposition) {
         this.crewComposition = crewComposition;
     }
 
     //
-    Mass getDailyFoodConsumption() {
+    public Mass getDailyFoodConsumption() {
         double sum = 0;
         for (HumanRequirements humanRequirements : crewComposition.keySet()) {
             sum += getDailyFoodConsumption(humanRequirements);
@@ -27,7 +27,7 @@ public class ShipCrew {
     }
 
     //
-    Mass getDailyWaterConsumption() {
+    public Mass getDailyWaterConsumption() {
         double sum = 0;
         for (HumanRequirements humanRequirements : crewComposition.keySet()) {
             sum += getDailyWaterConsumption(humanRequirements);
@@ -41,7 +41,7 @@ public class ShipCrew {
     }
 
     //
-    Mass getTotalLuggage() {
+    public Mass getTotalLuggage() {
         double sum = 0;
         for (HumanRequirements humanRequirements : crewComposition.keySet()) {
             sum += getTotalLuggage(humanRequirements);
@@ -55,7 +55,7 @@ public class ShipCrew {
     }
 
     //
-    double getRequiredArea() {
+    public double getRequiredArea() {
         double sum = 0;
         for (HumanRequirements humanRequirements : crewComposition.keySet()) {
             sum += getRequiredArea(humanRequirements);

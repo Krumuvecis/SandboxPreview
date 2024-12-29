@@ -1,5 +1,6 @@
 package space.ships;
 
+import human.ShipCrew;
 import org.jetbrains.annotations.NotNull;
 
 import dimensions.distance.Distance;
