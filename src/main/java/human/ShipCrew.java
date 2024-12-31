@@ -1,9 +1,10 @@
 package human;
 
-import dimensions.mass.Mass;
-
 import java.util.Map;
 
+import dimensions.mass.Mass;
+
+//old ideas, TODO: review all
 public class ShipCrew {
     Map<HumanRequirements, Integer> crewComposition;
 

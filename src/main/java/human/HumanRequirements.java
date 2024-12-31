@@ -3,7 +3,7 @@ package human;
 import dimensions.mass.MassUnit;
 import dimensions.mass.Mass;
 
-//
+//old ideas, TODO: review all
 public class HumanRequirements {
     public Mass
             dailyFoodConsumption,
