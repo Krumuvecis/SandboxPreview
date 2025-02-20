@@ -7,15 +7,16 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import rotors.modularHabitat.HabitatSectionCell;
-import rotors.modularHabitat.HabitatSection;
+import rotors.modularHabitat.habitatSection.HabitatSection;
 import rotors.modularHabitat.ModularHabitat;
 import rotors.habitatEditor.window.UserData;
+import rotors.habitatEditor.mainPanel.sectionPainting.HabitatSectionPainter;
 
 //
 interface HabitatPainter extends HabitatSectionPainter {
     //
     @SuppressWarnings("SameParameterValue")
-    default void paintHabitat(@NotNull Graphics g, @NotNull UserData userData, double @NotNull [] panelCenter, double scale,
+    default void paintHabitat(@NotNull Graphics g, @NotNull UserData.HabitatTabData habitatTabData, double @NotNull [] panelCenter, double scale,
                               double @NotNull [] viewLocationActual, @NotNull ModularHabitat habitat) {
         @NotNull List<@NotNull HabitatSection> sections = habitat.getSections();
         for (int i = 0; i < sections.size(); i++) {
@@ -28,10 +29,11 @@ interface HabitatPainter extends HabitatSectionPainter {
                     sectionCenterY_drawable = panelCenter[1] + sectionCenterY_actualRelative * scale;
 
             @NotNull HabitatSection section = sections.get(i);
-            int @Nullable [] activeCellLocation = userData.getActiveCellLocation();
+            int @Nullable [] activeCellLocation = habitatTabData.getActiveCellLocation();
             boolean activeSection = isActiveSection(activeCellLocation, i);
             paintSection(g, sectionStartX_drawable, sectionCenterY_drawable, scale, section,
-                    userData.getEditModeData().getEditMode(), activeSection, activeCellLocation);
+                    habitatTabData.getSectionInfoDisplayAmount().getValue(), habitatTabData.getActiveTab(),
+                    activeSection, activeCellLocation);
         }
     }
 

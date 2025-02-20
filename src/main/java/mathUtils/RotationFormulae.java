@@ -27,8 +27,13 @@ public class RotationFormulae {
         return getArcLength(radius, FULL_ANGLE);
     }
 
+    //SI
+    public static double getCircleArea(@NotNull Distance radius) {
+        return Math.PI * Math.pow(radius.getSI(), 2);
+    }
+
     //
-    public static double getArcAngle(Distance radius, Distance arcLength) {
+    public static double getArcAngle(@NotNull Distance radius, @NotNull Distance arcLength) {
         return FULL_ANGLE * getCircleCircumference(radius).getSI() / arcLength.getSI();
     }
 

@@ -10,7 +10,7 @@ import static consoleUtils.SimplePrinting.printLine;
 
 import rotors.modularHabitat.HabitatModule;
 import rotors.modularHabitat.HabitatSectionCell;
-import rotors.modularHabitat.HabitatSection;
+import rotors.modularHabitat.habitatSection.HabitatSection;
 import rotors.modularHabitat.ModularHabitat;
 import rotors.habitatEditor.window.UserData;
 import rotors.habitatEditor.window.ObserverData;
@@ -67,7 +67,7 @@ final class MainPanelMouseListener extends AbstractMouseListener {
     @Override
     void mouseClickedAction(@NotNull Point location, int button) {
         mouseMovedAction(location);
-        printLine("mouseClicked, button: " + button + ", x: " + mouseX + ", y: " + mouseY);
+        printLine("Mouse clicked, button: " + button + ", x: " + mouseX + ", y: " + mouseY); //for debugging, removable
         switch (button) {
             case 1 -> leftClickAction();
             case 2 -> { //middle
@@ -76,26 +76,71 @@ final class MainPanelMouseListener extends AbstractMouseListener {
             case 3 -> { //right
                 //TODO: handle right-click actions here
             }
-            default -> printLine("unrecognized mouse button");
+            default -> printLine("Unrecognized mouse button.");
         }
     }
 
-    @SuppressWarnings("SwitchStatementWithTooFewBranches")
     private void leftClickAction() {
-        int @Nullable [] activeCellLocation = userData.getActiveCellLocation();
-        if (activeCellLocation != null) {
-            @NotNull UserData.EditModeData editModeData = userData.getEditModeData();
-            switch (editModeData.getEditMode()) {
-                case EDIT_MODULES -> leftClickAction_editModule(editModeData, activeCellLocation);
-                //TODO: add more edit modes here
-                default -> {}
+        @NotNull UserData.HabitatSystemTabData habitatSystemTabData = userData.getTabData();
+        switch (habitatSystemTabData.getActiveTab()) {
+            case OVERALL -> {
+                @NotNull UserData.HabitatSystemOverallTabData overallTabData = habitatSystemTabData.getOverallTabData();
+                //TODO: add actions here, as needed
+            }
+            case ROTORS -> {
+                @NotNull UserData.RotorsTabData rotorsTabData = habitatSystemTabData.getRotorsTabData();
+                switch (rotorsTabData.getActiveTab()) {
+                    case AXIS -> {
+                        @NotNull UserData.AxisTabData axisTabData = rotorsTabData.getAxisTabData();
+                        //TODO: add actions here, as needed
+                    }
+                    case HABITAT -> {
+                        @NotNull UserData.HabitatTabData habitatTabData = rotorsTabData.getHabitatTabData();
+                        int @Nullable [] activeCellLocation = habitatTabData.getActiveCellLocation();
+                        if (activeCellLocation != null) {
+                            switch (habitatTabData.getActiveTab()) {
+                                case SECTIONS -> leftClickAction_sectionsTab(activeCellLocation,
+                                        habitatTabData.getSectionsTabData());
+                                case CELLS -> leftClickAction_cellsTab(activeCellLocation,
+                                        habitatTabData.getCellsTabData());
+                                case MODULES -> leftClickAction_modulesTab(activeCellLocation,
+                                        habitatTabData.getModulesTabData());
+                                default -> {
+                                    //unrecognized habitat sub-tab
+                                }
+                            }
+                        }
+                    }
+                    case BALANCING -> {
+                        @NotNull UserData.BalancingTabData balancingTabData = rotorsTabData.getBalancingTabData();
+                        //TODO: add actions here, as needed
+                    }
+                    default -> {
+                        //unrecognized rotors sub-tab
+                    }
+                }
+            }
+            case MISCELLANEOUS -> {
+                @NotNull UserData.HabitatSystemMiscellaneousTabData
+                        miscellaneousTabData = habitatSystemTabData.getMiscellaneousTabData();
+                //TODO: add actions here, as needed
+            }
+            default -> {
+                //unrecognized habitat system sub-tab
             }
         }
     }
 
-    private void leftClickAction_editModule(@NotNull UserData.EditModeData editModeData, int @NotNull [] activeCellLocation) {
-        @NotNull HabitatSectionCell cell = habitat.getSection(activeCellLocation[0]).getCell(activeCellLocation[1], activeCellLocation[2]);
-        @Nullable HabitatModule module = editModeData.getModuleByTemplate();
+    private void leftClickAction_sectionsTab(int @NotNull [] activeCellLocation,
+                                             @NotNull UserData.SectionsTabData sectionsTabData) {
+        //TODO: add actions here, as needed
+    }
+
+    private void leftClickAction_cellsTab(int @NotNull [] activeCellLocation,
+                                          @NotNull UserData.CellsTabData cellsTabData) {
+        @NotNull HabitatSectionCell
+                cell = habitat.getSection(activeCellLocation[0]).getCell(activeCellLocation[1], activeCellLocation[2]);
+        @Nullable HabitatModule module = cellsTabData.getModuleByTemplate();
         if (module == null) {
             cell.removeModule();
         } else {
@@ -105,6 +150,11 @@ final class MainPanelMouseListener extends AbstractMouseListener {
                 printLine(e.getMessage());
             }
         }
+    }
+
+    private void leftClickAction_modulesTab(int @NotNull [] activeCellLocation,
+                                            @NotNull UserData.ModulesTabData modulesTabData) {
+        //TODO: add actions here, as needed
     }
 
     //gets called when the mouse is moved
@@ -118,8 +168,9 @@ final class MainPanelMouseListener extends AbstractMouseListener {
     private void checkActiveCell() {
         double @NotNull [] mouseActualLocation_absolute = getMouseLocation_absoluteUnscaled();
         int activeSectionIndex = getActiveSectionIndex(mouseActualLocation_absolute);
+        @NotNull UserData.HabitatTabData habitatTabData = userData.getTabData().getRotorsTabData().getHabitatTabData();
         if (activeSectionIndex < 0) {
-            userData.resetActiveCellLocation();
+            habitatTabData.resetActiveCellLocation();
         } else {
             //is within a section, find active cell
             @NotNull List<@NotNull HabitatSection> sections = habitat.getSections();
@@ -127,7 +178,7 @@ final class MainPanelMouseListener extends AbstractMouseListener {
             double
                     cellSize = HabitatSectionCell.CELL_SIZE.getSI(),
                     sectionStartX_actual = habitat.getLength(activeSectionIndex - 1) * cellSize,
-                    sectionWidth_actual = section.getRowCount() * cellSize,
+                    sectionWidth_actual = section.getSize()[1] * cellSize,
                     sectionStartY_actual = -sectionWidth_actual / 2;
             double @NotNull [] mouseActualLocation_relative = new double[] {
                     mouseActualLocation_absolute[0] - sectionStartX_actual,
@@ -135,7 +186,8 @@ final class MainPanelMouseListener extends AbstractMouseListener {
             int @NotNull [] estimatedIndexes = new int[] {
                     (int) Math.floor(mouseActualLocation_relative[0] / cellSize),
                     (int) Math.floor(mouseActualLocation_relative[1] / cellSize)};
-            userData.setActiveCellLocation(activeSectionIndex, estimatedIndexes[0], estimatedIndexes[1]);
+            habitatTabData.setActiveCellLocation(
+                    activeSectionIndex, estimatedIndexes[0], estimatedIndexes[1]);
         }
     }
 
@@ -146,7 +198,7 @@ final class MainPanelMouseListener extends AbstractMouseListener {
             @NotNull List<@NotNull HabitatSection> sections = habitat.getSections();
             @NotNull HabitatSection section = sections.get(activeSectionIndex_byX);
             double
-                    sectionWidth_actual = section.getRowCount() * HabitatSectionCell.CELL_SIZE.getSI(),
+                    sectionWidth_actual = section.getSize()[1] * HabitatSectionCell.CELL_SIZE.getSI(),
                     sectionStartY_actual = -sectionWidth_actual / 2;
             if (mouseActualLocation_absolute[1] >= sectionStartY_actual
                     && mouseActualLocation_absolute[1] < sectionStartY_actual + sectionWidth_actual) {

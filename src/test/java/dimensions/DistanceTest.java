@@ -2,11 +2,13 @@ package dimensions;
 
 import java.util.ArrayList;
 
+import org.jetbrains.annotations.NotNull;
+
 import dimensions.distance.DistanceUnit;
 import dimensions.distance.Distance;
 
 //
-final class DistanceTest extends DimensionalValueTest<Distance, DistanceUnit> {
+final class DistanceTest extends DimensionalValueTest<@NotNull Distance, @NotNull DistanceUnit> {
     //
     public static void main(String[] args) {
         new DistanceTest(new Distance(100, DistanceUnit.M));
@@ -16,7 +18,7 @@ final class DistanceTest extends DimensionalValueTest<Distance, DistanceUnit> {
         new DistanceTest(new Distance(1, DistanceUnit.PC));
     }
 
-    private DistanceTest(Distance distance) {
+    private DistanceTest(@NotNull Distance distance) {
         super(distance, new ArrayList<>(){{
             add(DistanceUnit.M);
             add(DistanceUnit.KM);

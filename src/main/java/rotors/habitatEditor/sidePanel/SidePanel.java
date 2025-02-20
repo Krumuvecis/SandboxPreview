@@ -6,21 +6,21 @@ import javax.swing.JPanel;
 
 import org.jetbrains.annotations.NotNull;
 
-import rotors.habitatEditor.sidePanel.tabbedPane.TabbedPane;
-import rotors.habitatEditor.window.UserData;
+import rotors.habitatEditor.sidePanel.tabbedPanes.habitatSystemPane.HabitatSystemTabbedPane;
+import rotors.habitatEditor.window.UserData.HabitatSystemTabData;
 
 //
 public final class SidePanel extends JPanel {
-    private static final @NotNull Dimension
-            PANEL_SIZE = new Dimension(250, Integer.MAX_VALUE),
-            TABBED_PANE_SIZE = new Dimension(PANEL_SIZE.width, 500);
+    private static final int
+            PANEL_WIDTH = 250,
+            TABBED_PANE_HEIGHT = 500;
     private static final @NotNull Color BACKGROUND_COLOR = Color.darkGray;
 
     //
-    public SidePanel(@NotNull UserData.EditModeData editModeData) {
+    public SidePanel(@NotNull HabitatSystemTabData tabData) {
         super();
         setBackground(BACKGROUND_COLOR);
-        setPreferredSize(PANEL_SIZE);
-        add(new TabbedPane(TABBED_PANE_SIZE, BACKGROUND_COLOR, editModeData));
+        setPreferredSize(new Dimension(PANEL_WIDTH, Integer.MAX_VALUE));
+        add(new HabitatSystemTabbedPane(new Dimension(PANEL_WIDTH, TABBED_PANE_HEIGHT), BACKGROUND_COLOR, tabData));
     }
 }

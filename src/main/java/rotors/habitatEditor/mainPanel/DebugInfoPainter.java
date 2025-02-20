@@ -9,6 +9,8 @@ import java.awt.event.KeyEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import static consoleUtils.stringTools.NumberFormatter.doubleToString;
+
 import rotors.habitatEditor.window.UserData;
 import rotors.habitatEditor.window.ObserverData;
 
@@ -29,7 +31,7 @@ interface DebugInfoPainter {
             addAll(getIntroLines());
             addAll(getPanelInfoLines(mainPanel, mouseLocation));
             addAll(getUnscaledViewInfoLines(observerData.getViewLocationActual(), scale, mouseLocation_absoluteUnscaled));
-            addAll(getActiveCellInfoLines(userData));
+            addAll(getActiveCellInfoLines(userData.getTabData().getRotorsTabData().getHabitatTabData().getActiveCellLocation()));
         }});
         paintLines(g, TEXT_LOCATION_2, new ArrayList<>() {{
             addAll(getPressedKeysInfoLines(pressedKeys));
@@ -57,7 +59,10 @@ interface DebugInfoPainter {
         return new ArrayList<>() {{
             add("panel size x: " + mainPanel.getWidth() + ", y: " + mainPanel.getHeight());
             double @NotNull [] panelCenter = mainPanel.getCenter();
-            add("panel center x: " + panelCenter[0] + ", y: " + panelCenter[1]);
+            int decimalPlaces = 2;
+            add("panel center " +
+                    "x: " + doubleToString(panelCenter[0], decimalPlaces) + ", " +
+                    "y: " + doubleToString(panelCenter[1], decimalPlaces));
             add("mouse on panel x: " + mouseLocation[0] + ", y: " + mouseLocation[1]);
             add("");
         }};
@@ -67,16 +72,20 @@ interface DebugInfoPainter {
                                                                      double scale,
                                                                      double @NotNull [] mouseLocation_absoluteUnscaled) {
         return new ArrayList<>() {{
-            add("view location actual x: " + viewLocationActual[0] + ", y: " + viewLocationActual[1]);
-            add("scale: " + scale);
-            add("mouse actual absolute x: " + mouseLocation_absoluteUnscaled[0] + ", y: " + mouseLocation_absoluteUnscaled[1]);
+            int decimalPlaces = 2;
+            add("view location actual " +
+                    "x: " + doubleToString(viewLocationActual[0], decimalPlaces) + ", " +
+                    "y: " + doubleToString(viewLocationActual[1], decimalPlaces));
+            add("scale: " + doubleToString(scale, decimalPlaces));
+            add("mouse actual absolute " +
+                    "x: " + doubleToString(mouseLocation_absoluteUnscaled[0], decimalPlaces) + ", " +
+                    "y: " + doubleToString(mouseLocation_absoluteUnscaled[1], decimalPlaces));
             add("");
         }};
     }
 
-    private @NotNull List<@Nullable String> getActiveCellInfoLines(@NotNull UserData userData) {
+    private @NotNull List<@Nullable String> getActiveCellInfoLines(int @Nullable [] activeCellLocation) {
         return new ArrayList<>() {{
-            int @Nullable [] activeCellLocation = userData.getActiveCellLocation();
             @NotNull String activeCellString;
             if (activeCellLocation == null) {
                 activeCellString = ": null";

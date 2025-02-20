@@ -1,5 +1,7 @@
 package dimensions.distance;
 
+import org.jetbrains.annotations.NotNull;
+
 import dimensions.DimensionalUnit;
 
 //Units of distance.
@@ -10,25 +12,25 @@ public enum DistanceUnit implements DimensionalUnit {
     LY("ly", "light years"),
     PC("pc", "parsecs");
 
-    private final String
+    private final @NotNull String
             shortName,
             longName;
 
     //
-    DistanceUnit(String shortName, String longName) {
+    DistanceUnit(@NotNull String shortName, @NotNull String longName) {
         this.shortName = shortName;
         this.longName = longName;
     }
 
     //
     @Override
-    public final String getShortName() {
+    public final @NotNull String getShortName() {
         return shortName;
     }
 
     //
     @Override
-    public final String getLongName() {
+    public final @NotNull String getLongName() {
         return longName;
     }
 }

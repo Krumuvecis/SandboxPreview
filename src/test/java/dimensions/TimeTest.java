@@ -2,11 +2,13 @@ package dimensions;
 
 import java.util.ArrayList;
 
+import org.jetbrains.annotations.NotNull;
+
 import dimensions.time.TimeUnit;
 import dimensions.time.Time;
 
 //
-final class TimeTest extends DimensionalValueTest<Time, TimeUnit> {
+final class TimeTest extends DimensionalValueTest<@NotNull Time, @NotNull TimeUnit> {
     //
     public static void main(String[] args) {
         new TimeTest(new Time(100, TimeUnit.MS));
@@ -19,7 +21,7 @@ final class TimeTest extends DimensionalValueTest<Time, TimeUnit> {
         new TimeTest(new Time(1, TimeUnit.YEAR));
     }
 
-    private TimeTest(Time time) {
+    private TimeTest(@NotNull Time time) {
         super(time, new ArrayList<>(){{
             add(TimeUnit.MS);
             add(TimeUnit.S);

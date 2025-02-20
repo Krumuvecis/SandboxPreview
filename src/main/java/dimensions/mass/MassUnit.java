@@ -1,5 +1,7 @@
 package dimensions.mass;
 
+import org.jetbrains.annotations.NotNull;
+
 import dimensions.DimensionalUnit;
 
 //Units of mass.
@@ -11,25 +13,25 @@ public enum MassUnit implements DimensionalUnit {
     JUPITER_MASS("Jupiter's mass", "Jupiter's masses"),
     SOLAR_MASS("Sun's mass", "Sun's masses");
 
-    private final String
+    private final @NotNull String
             shortName,
             longName;
 
     //
-    MassUnit(String shortName, String longName) {
+    MassUnit(@NotNull String shortName, @NotNull String longName) {
         this.shortName = shortName;
         this.longName = longName;
     }
 
     //
     @Override
-    public final String getShortName() {
+    public final @NotNull String getShortName() {
         return shortName;
     }
 
     //
     @Override
-    public final String getLongName() {
+    public final @NotNull String getLongName() {
         return longName;
     }
 }

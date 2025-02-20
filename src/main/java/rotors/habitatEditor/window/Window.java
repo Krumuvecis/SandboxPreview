@@ -45,7 +45,7 @@ public final class Window extends JFrame {
 
     private void addPanels(@NotNull ModularHabitat habitat, @NotNull KeyboardChecker keyboardChecker) {
         getContentPane().setLayout(new BorderLayout());
-        getContentPane().add(new SidePanel(userData.getEditModeData()), BorderLayout.WEST);
+        getContentPane().add(new SidePanel(userData.getTabData()), BorderLayout.WEST);
         getContentPane().add(new MainPanel(habitat, userData, observerData, keyboardChecker));
     }
 }

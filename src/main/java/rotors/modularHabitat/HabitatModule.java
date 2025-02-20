@@ -4,17 +4,17 @@ import java.awt.Color;
 
 import org.jetbrains.annotations.NotNull;
 
+import basicParts.MassivePart;
+import utils.Copyable;
+
 //
-public abstract class HabitatModule {
+public abstract class HabitatModule implements MassivePart, Copyable<@NotNull HabitatModule> {
     private final @NotNull Color color;
 
     //
     public HabitatModule(@NotNull Color color) {
         this.color = color;
     }
-
-    //
-    public abstract @NotNull HabitatModule copy();
 
     //for graphical purposes
     public @NotNull Color getColor() {

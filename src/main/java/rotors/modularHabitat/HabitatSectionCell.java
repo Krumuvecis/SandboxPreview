@@ -4,9 +4,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import dimensions.distance.Distance;
+import dimensions.mass.Mass;
+import basicParts.MassivePart;
 
 //contains a stack of modules
-public final class HabitatSectionCell {
+public final class HabitatSectionCell implements MassivePart {
     public static final @NotNull Distance CELL_SIZE = new Distance(1.5);
     private @Nullable HabitatModule module;
 
@@ -42,6 +44,17 @@ public final class HabitatSectionCell {
         try {
             setModule(null);
         } catch (@NotNull CellTakenException ignored) {}
+    }
+
+    //
+    @Override
+    public @NotNull Mass getMass() {
+        @Nullable HabitatModule module = getModule();
+        if (module == null) {
+            return new Mass(0);
+        } else {
+            return getModule().getMass();
+        }
     }
 
     //

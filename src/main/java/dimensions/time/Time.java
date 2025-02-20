@@ -4,12 +4,14 @@ import java.util.Collections;
 import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import dimensions.ConversionRatiosInitializer;
 import dimensions.DimensionalValue;
 
 //
-public final class Time extends DimensionalValue<TimeUnit> implements ConversionRatiosInitializer<TimeUnit> {
+public final class Time extends DimensionalValue<@NotNull TimeUnit, @NotNull Time>
+        implements ConversionRatiosInitializer<@NotNull TimeUnit> {
     private static final @NotNull TimeUnit SI_UNIT = TimeUnit.S;
     private static final double
             S_TO_MS = 1000,
@@ -19,33 +21,35 @@ public final class Time extends DimensionalValue<TimeUnit> implements Conversion
             WEEK_TO_DAY = 7,
             YEAR_TO_MONTH = 12,
             YEAR_TO_DAY = 365.25;
-    private static final Map<TimeUnit, Map<TimeUnit, Double>> CONVERSION_RATIOS;
+    private static final @NotNull Map<@NotNull TimeUnit, @NotNull Map<@NotNull TimeUnit, @NotNull Double>>
+            CONVERSION_RATIOS;
 
     static {
-        Map<TimeUnit, Map<TimeUnit, Double>>
+        @NotNull Map<@NotNull TimeUnit, @NotNull Map<@NotNull TimeUnit, @NotNull Double>>
                 ratios = ConversionRatiosInitializer.initializeConversionMap(TimeUnit.values());
         new Time().populateConversionRatios(ratios);
         CONVERSION_RATIOS = Collections.unmodifiableMap(ratios);
     }
 
-    //custom units
-    public Time(double value, TimeUnit unit) {
+    //custom units, null - SI
+    public Time(double value, @Nullable TimeUnit unit) {
         super("Time", SI_UNIT, value, unit, CONVERSION_RATIOS);
     }
 
-    //default units
+    //default units, SI
     public Time(double value) {
-        this(value, SI_UNIT);
+        this(value, null);
     }
 
     //for conversion ratio initialization
     private Time() {
-        this(0, null);
+        this(0);
     }
 
     //
     @Override
-    public void populateConversionRatios(Map<TimeUnit, Map<TimeUnit, Double>> ratios) {
+    public void populateConversionRatios(
+            @NotNull Map<@NotNull TimeUnit, @NotNull Map<@NotNull TimeUnit, @NotNull Double>> ratios) {
         //seconds
         addConversions(ratios, TimeUnit.S, TimeUnit.MS, S_TO_MS);
 
@@ -87,5 +91,11 @@ public final class Time extends DimensionalValue<TimeUnit> implements Conversion
         addConversions(ratios, TimeUnit.YEAR, TimeUnit.DAY, YEAR_TO_DAY);
         addConversions(ratios, TimeUnit.YEAR, TimeUnit.WEEK, YEAR_TO_DAY / WEEK_TO_DAY);
         addConversions(ratios, TimeUnit.YEAR, TimeUnit.MONTH, YEAR_TO_MONTH);
+    }
+
+    //
+    @Override
+    public @NotNull Time copy() {
+        return new Time(getValue(), getUnit());
     }
 }

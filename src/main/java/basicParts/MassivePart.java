@@ -1,7 +1,11 @@
 package basicParts;
 
+import org.jetbrains.annotations.NotNull;
+
+import dimensions.mass.Mass;
+
 //
 public interface MassivePart {
     //
-    double getMass();
+    @NotNull Mass getMass();
 }

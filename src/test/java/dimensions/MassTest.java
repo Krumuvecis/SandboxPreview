@@ -2,11 +2,13 @@ package dimensions;
 
 import java.util.ArrayList;
 
+import org.jetbrains.annotations.NotNull;
+
 import dimensions.mass.MassUnit;
 import dimensions.mass.Mass;
 
 //
-final class MassTest extends DimensionalValueTest<Mass, MassUnit> {
+final class MassTest extends DimensionalValueTest<@NotNull Mass, @NotNull MassUnit> {
     //
     public static void main(String[] args) {
         new MassTest(new Mass(100, MassUnit.G));
@@ -17,7 +19,7 @@ final class MassTest extends DimensionalValueTest<Mass, MassUnit> {
         new MassTest(new Mass(1, MassUnit.SOLAR_MASS));
     }
 
-    private MassTest(Mass mass) {
+    private MassTest(@NotNull Mass mass) {
         super(mass, new ArrayList<>(){{
             add(MassUnit.G);
             add(MassUnit.KG);

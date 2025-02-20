@@ -7,13 +7,15 @@ import javax.swing.JPanel;
 
 import org.jetbrains.annotations.NotNull;
 
-import rotors.habitatEditor.window.KeyboardChecker;
 import rotors.modularHabitat.ModularHabitat;
 import rotors.habitatEditor.window.UserData;
 import rotors.habitatEditor.window.ObserverData;
+import rotors.habitatEditor.window.KeyboardChecker;
 
 //
 public class MainPanel extends JPanel implements DebugInfoPainter, HabitatPainter {
+    private static final int CENTER_CROSS_SIZE = 20;
+    private static final @NotNull Color CENTER_CROSS_COLOR = Color.white;
     private final @NotNull ModularHabitat habitat;
     private final @NotNull UserData userData;
     private final @NotNull ObserverData observerData;
@@ -21,7 +23,8 @@ public class MainPanel extends JPanel implements DebugInfoPainter, HabitatPainte
     private final @NotNull MainPanelMouseListener mouseListener;
 
     //
-    public MainPanel(@NotNull ModularHabitat habitat, @NotNull UserData userData, @NotNull ObserverData observerData, @NotNull KeyboardChecker keyboardChecker) {
+    public MainPanel(@NotNull ModularHabitat habitat, @NotNull UserData userData, @NotNull ObserverData observerData,
+                     @NotNull KeyboardChecker keyboardChecker) {
         super(null);
         setBackground(Color.BLACK);
         this.habitat = habitat;
@@ -35,6 +38,7 @@ public class MainPanel extends JPanel implements DebugInfoPainter, HabitatPainte
     }
 
     //deletable; testing null layout and absolute coordinates
+    @SuppressWarnings("MagicNumber")
     private void addTestPanel() {
         JPanel testPanel = new JPanel();
         testPanel.setBackground(Color.cyan);
@@ -48,29 +52,72 @@ public class MainPanel extends JPanel implements DebugInfoPainter, HabitatPainte
     public void paint(@NotNull Graphics g) {
         super.paint(g);
         double @NotNull [] panelCenter = getCenter();
-        double scale = observerData.getScale();
-        double @NotNull [] viewLocationActual = observerData.getViewLocationActual();
-        paintHabitat(g, userData, panelCenter, scale, viewLocationActual, habitat);
+        @NotNull UserData.HabitatSystemTabData habitatSystemTabData = userData.getTabData();
+        switch (habitatSystemTabData.getActiveTab()) {
+            case OVERALL -> paintHabitatSystemTab_overall(g, panelCenter, habitatSystemTabData.getOverallTabData());
+            case ROTORS -> paintHabitatSystemTab_rotors(g, panelCenter, habitatSystemTabData.getRotorsTabData());
+            case MISCELLANEOUS ->
+                    paintHabitatSystemTab_miscellaneous(g, panelCenter, habitatSystemTabData.getMiscellaneousTabData());
+            default -> {
+                //unrecognized habitat system sub-tab
+                //TODO: add some visual message
+            }
+        }
         paintCenterCross(g, panelCenter);
-        paintDebugInfo(g, userData, observerData,
-                this, mouseListener.getMouseLocation(),
-                scale, mouseListener.getMouseLocation_absoluteUnscaled(),
-                keyboardChecker.getPressedKeys());
     }
 
     //
     double @NotNull [] getCenter() {
-        return new double[] {getWidth() / 2.0, getHeight() / 2.0};
+        return new double[] {(double) getWidth() / 2, (double) getHeight() / 2};
     }
 
     private void paintCenterCross(@NotNull Graphics g, double @NotNull [] panelCenter) {
-        int size = 20;
-        g.setColor(Color.white);
+        int size = CENTER_CROSS_SIZE;
+        g.setColor(CENTER_CROSS_COLOR);
         g.drawLine( //horizontal line
                 (int) (panelCenter[0] - size / 2), (int) panelCenter[1],
                 (int) (panelCenter[0] + size / 2), (int) panelCenter[1]);
         g.drawLine( //vertical line
                 (int) panelCenter[0], (int) (panelCenter[1] - size / 2),
                 (int) panelCenter[0], (int) (panelCenter[1] + size / 2));
+    }
+
+    private void paintHabitatSystemTab_overall(@NotNull Graphics g, double @NotNull [] panelCenter,
+                                               @NotNull UserData.HabitatSystemOverallTabData overallTabData) {
+        //TODO: paint some stuff here
+    }
+
+    private void paintHabitatSystemTab_rotors(@NotNull Graphics g, double @NotNull [] panelCenter,
+                                              @NotNull UserData.RotorsTabData rotorsTabData) {
+
+        double scale = observerData.getScale();
+        switch (rotorsTabData.getActiveTab()) {
+            case AXIS -> {
+                @NotNull UserData.AxisTabData axisTabData = rotorsTabData.getAxisTabData();
+                //TODO: paint some stuff here
+            }
+            case HABITAT -> {
+                double @NotNull [] viewLocationActual = observerData.getViewLocationActual();
+                paintHabitat(g, rotorsTabData.getHabitatTabData(), panelCenter, scale, viewLocationActual, habitat);
+            }
+            case BALANCING -> {
+                @NotNull UserData.BalancingTabData balancingTabData = rotorsTabData.getBalancingTabData();
+                //TODO: paint some stuff here
+            }
+            default -> {
+                //unrecognized rotors sub-tab
+                //TODO: add some visual message
+            }
+        }
+        paintDebugInfo(g, userData, observerData,
+                this, mouseListener.getMouseLocation(),
+                scale, mouseListener.getMouseLocation_absoluteUnscaled(),
+                keyboardChecker.getPressedKeys());
+    }
+
+    @SuppressWarnings("LongLine")
+    private void paintHabitatSystemTab_miscellaneous(@NotNull Graphics g, double @NotNull [] panelCenter,
+                                                     @NotNull UserData.HabitatSystemMiscellaneousTabData miscellaneousTabData) {
+        //TODO: paint some stuff here
     }
 }

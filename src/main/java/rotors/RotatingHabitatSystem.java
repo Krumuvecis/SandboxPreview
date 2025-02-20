@@ -35,5 +35,4 @@ public class RotatingHabitatSystem {
         }
         return new Mass(sum);
     }
-
 }

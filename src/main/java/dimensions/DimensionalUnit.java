@@ -1,10 +1,12 @@
 package dimensions;
 
+import org.jetbrains.annotations.NotNull;
+
 //
 public interface DimensionalUnit {
     //
-    String getShortName();
+    @NotNull String getShortName();
 
     //
-    String getLongName();
+    @NotNull String getLongName();
 }

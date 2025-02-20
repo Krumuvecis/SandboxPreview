@@ -1,5 +1,7 @@
 package dimensions.time;
 
+import org.jetbrains.annotations.NotNull;
+
 import dimensions.DimensionalUnit;
 
 //Units of time.
@@ -13,25 +15,25 @@ public enum TimeUnit implements DimensionalUnit {
     MONTH("m", "months"),
     YEAR("y", "years");
 
-    private final String
+    private final @NotNull String
             shortName,
             longName;
 
     //
-    TimeUnit(String shortName, String longName) {
+    TimeUnit(@NotNull String shortName, @NotNull String longName) {
         this.shortName = shortName;
         this.longName = longName;
     }
 
     //
     @Override
-    public final String getShortName() {
+    public final @NotNull String getShortName() {
         return shortName;
     }
 
     //
     @Override
-    public final String getLongName() {
+    public final @NotNull String getLongName() {
         return longName;
     }
 }

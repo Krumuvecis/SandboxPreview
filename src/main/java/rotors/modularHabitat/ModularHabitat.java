@@ -1,100 +1,72 @@
 package rotors.modularHabitat;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.ArrayList;
 
 import org.jetbrains.annotations.NotNull;
-import rotors.modularHabitat.particularModules.SampleModule_green;
 
-//
-public class ModularHabitat {
-    private final @NotNull List<@NotNull HabitatSection> sections;
+import dimensions.distance.DistanceUnit;
+import dimensions.distance.Distance;
+import basicParts.cables.CableMaterial;
+import rotors.modularHabitat.particularModules.SampleModule_medium;
+import rotors.modularHabitat.habitatSection.HabitatSection;
+
+//a modular habitat consisting of sections
+public class ModularHabitat extends SectionContainer {
+    private final @NotNull Distance radius;
 
     //
-    public ModularHabitat() {
-        sections = new ArrayList<>();
+    public ModularHabitat(@NotNull Distance radius) {
+        super();
+        this.radius = radius;
     }
 
     //
-    public final @NotNull List<@NotNull HabitatSection> getSections() {
-        return Collections.unmodifiableList(sections);
-    }
-
-    //
-    public final @NotNull HabitatSection getSection(int index) throws IndexOutOfBoundsException {
-        return sections.get(index);
+    public @NotNull Distance getRadius() {
+        return radius;
     }
 
     //gets length in number of cells for sections from 0 to index (included)
     public final int getLength(int index) {
         int sum = 0;
+        @NotNull List<@NotNull HabitatSection> sections = getSections();
         for (int i = 0; i <= index && i < sections.size(); i++) {
-            sum += sections.get(i).getColumnCount();
+            sum += sections.get(i).getSize()[0];
         }
         return sum;
     }
 
     //gets total length in number of cells
     public final int getLength() {
-        return getLength(sections.size() - 1);
+        return getLength(getSections().size() - 1);
     }
 
-    //
-    public final void addSection_atEnd(@NotNull HabitatSection section) {
-        sections.add(section);
-    }
-
-    //
-    public final void addSection_atStart(@NotNull HabitatSection section) {
-        insertSection(section, 0);
-    }
-
-    //
-    public final void insertSection(@NotNull HabitatSection section, int index) throws IndexOutOfBoundsException {
-        //TODO: finish this
-        incrementSectionIndex(index);
-        throw new RuntimeException("section inserting not supported yet");
-    }
-
-    //
-    public final void removeSection(int index) throws IndexOutOfBoundsException {
-        //TODO: finish this
-        decrementSectionIndex(index + 1);
-        throw new RuntimeException("section removal not supported yet");
-    }
-
-    //increments indexes for sections starting from startIndex
-    private void incrementSectionIndex(int startIndex) {
-        for (int i = startIndex; i < sections.size(); i++) {
-            sections.get(i).incrementSectionIndex();
-        }
-    }
-
-    //decrements indexes for sections starting from startIndex
-    private void decrementSectionIndex(int startIndex) {
-        for (int i = startIndex; i < sections.size(); i++) {
-            sections.get(i).decrementSectionIndex();
-        }
-    }
-
-    //
+    //a sample habitat with sample sections
     public static final class SampleHabitat extends ModularHabitat {
+        private static final @NotNull CableMaterial CABLE_MATERIAL = CableMaterial.NYLON;
+        private static final @NotNull Distance
+                CABLE_DIAMETER = new Distance(0.03, DistanceUnit.M),
+                ROTOR_RADIUS = new Distance(10, DistanceUnit.KM);
+
         //
         public SampleHabitat() {
-            super();
+            super(ROTOR_RADIUS);
+
+            //create some sample sections
             @NotNull HabitatSection
-                    section1 = new HabitatSection.SampleSection_7x7(),
-                    section2 = new HabitatSection.SampleSection_5x3(),
-                    section3 = new HabitatSection.SampleSection_5x5();
-            try {
-                section1.getCell(2, 2).setModule(new SampleModule_green());
-                section2.getCell(2, 2).setModule(new SampleModule_green());
-                section3.getCell(2, 2).setModule(new SampleModule_green());
-            } catch (@NotNull HabitatSectionCell.CellTakenException ignored) {}
+                    section1 = new HabitatSection.SampleSection(CABLE_MATERIAL, CABLE_DIAMETER, getRadius(), 7, 7),
+                    section2 = new HabitatSection.SampleSection(CABLE_MATERIAL, CABLE_DIAMETER, getRadius(), 3, 5),
+                    section3 = new HabitatSection.SampleSection(CABLE_MATERIAL, CABLE_DIAMETER, getRadius(), 5, 5);
             addSection_atEnd(section1);
             addSection_atEnd(section2);
             addSection_atEnd(section3);
+
+            //fill some cells with sample modules
+            @NotNull HabitatModule sampleModule = new SampleModule_medium();
+            try {
+                section1.getCell(2, 2).setModule(sampleModule.copy());
+                section2.getCell(2, 2).setModule(sampleModule.copy());
+                section3.getCell(2, 2).setModule(sampleModule.copy());
+            } catch (@NotNull HabitatSectionCell.CellTakenException ignored) {}
         }
     }
 }
