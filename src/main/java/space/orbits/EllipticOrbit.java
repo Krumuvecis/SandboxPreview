@@ -29,7 +29,7 @@ public class EllipticOrbit implements OrbitInterface {
             unit = periapsis.getUnit();
 
         } else {
-            unit = periapsis.getUnitSI();
+            unit = periapsis.getBaseUnit();
         }
         double
                 rp = periapsis.get(unit),

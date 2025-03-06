@@ -78,7 +78,7 @@ public class HabitatSection implements MassivePart, Copyable<@NotNull HabitatSec
 
     //carried mass without the cells
     public @NotNull Mass getDryCarriedMass() {
-        return new Mass(structure.getMass().getSI() + additionalSectionMass.getSI());
+        return new Mass(structure.getMass().getInBase() + additionalSectionMass.getInBase());
     }
 
     //mass of all the cells
@@ -88,18 +88,18 @@ public class HabitatSection implements MassivePart, Copyable<@NotNull HabitatSec
 
     //total, that's hanging from the rigging
     public @NotNull Mass getCarriedMass() {
-        return new Mass(getDryCarriedMass().getSI() + getCellsMass().getSI());
+        return new Mass(getDryCarriedMass().getInBase() + getCellsMass().getInBase());
     }
 
     //whole section, including rigging, but excluding cells
     public @NotNull Mass getDryMass() {
-        return new Mass(getDryCarriedMass().getSI() + rigging.getMass().getSI());
+        return new Mass(getDryCarriedMass().getInBase() + rigging.getMass().getInBase());
     }
 
     //complete total mass; carried mass + rigging; total dry mass + cells
     @Override
     public @NotNull Mass getMass() {
-        return new Mass(getCarriedMass().getSI() + rigging.getMass().getSI());
+        return new Mass(getCarriedMass().getInBase() + rigging.getMass().getInBase());
     }
 
     @Override

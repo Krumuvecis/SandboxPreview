@@ -21,7 +21,7 @@ public final class Window extends JFrame {
     public Window(@NotNull ModularHabitat habitat, long fps) {
         super();
         userData = new UserData();
-        double cellSizeSI = HabitatSectionCell.CELL_SIZE.getSI();
+        double cellSizeSI = HabitatSectionCell.CELL_SIZE.getInBase();
         observerData = new ObserverData(habitat.getLength() * cellSizeSI);
 
         configureWindow();

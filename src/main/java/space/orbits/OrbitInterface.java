@@ -29,7 +29,7 @@ public interface OrbitInterface {
         if (semiMajorAxis == null) {
             throw new RuntimeException("Semi-major axis not defined, unable to calculate angular velocity.");
         } else {
-            double radiusCubed = Math.pow(getSemiMajorAxis().getSI(), 3);
+            double radiusCubed = Math.pow(getSemiMajorAxis().getInBase(), 3);
             return Math.sqrt(parentSpecificGravity / radiusCubed);
         }
     }

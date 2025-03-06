@@ -28,7 +28,7 @@ public class Cable implements MassivePart, Copyable<@NotNull Cable> {
     }
 
     private static double calculateCrossSection(@NotNull Distance diameter) { //in m2
-        return RotationFormulae.getCircleArea(new Distance(diameter.getSI() / 2));
+        return RotationFormulae.getCircleArea(new Distance(diameter.getInBase() / 2));
     }
 
     private static double calculateMaxStrength(double maxStress, double crossSection) { //SI
@@ -36,7 +36,7 @@ public class Cable implements MassivePart, Copyable<@NotNull Cable> {
     }
 
     private static @NotNull Mass calculateMass(double density, double crossSection, @NotNull Distance length) {
-        return new Mass(density * crossSection * length.getSI());
+        return new Mass(density * crossSection * length.getInBase());
     }
 
     //
@@ -62,7 +62,7 @@ public class Cable implements MassivePart, Copyable<@NotNull Cable> {
 
     //carryable mass, can be negative
     public final @NotNull Mass getCarryableMass(double acceleration) {
-        return new Mass(maxStrength / acceleration - mass.getSI());
+        return new Mass(maxStrength / acceleration - mass.getInBase());
     }
 
     //

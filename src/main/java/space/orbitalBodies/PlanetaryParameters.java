@@ -31,7 +31,7 @@ public class PlanetaryParameters {
     // m/s^2
     public double getSurfaceGravity() {
         // g = G*M / R^2
-        return major.getSpecificGravity() / Math.pow(radius.getSI(), 2);
+        return major.getSpecificGravity() / Math.pow(radius.getInBase(), 2);
     }
 
     // 1/m
@@ -43,7 +43,7 @@ public class PlanetaryParameters {
         // r_g / h = (2*R + h) / (R+h))^2
         double
                 referenceHeightSI = 1,
-                radiusSI = radius.getSI();
+                radiusSI = radius.getInBase();
         return (2 * radiusSI + referenceHeightSI) / Math.pow(radiusSI + referenceHeightSI, 2);
     }
 }

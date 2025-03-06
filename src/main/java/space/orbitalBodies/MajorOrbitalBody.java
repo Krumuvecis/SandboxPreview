@@ -33,7 +33,7 @@ public class MajorOrbitalBody extends AbstractOrbitalBody {
     }
 
     private static double calculateSpecificGravity(@NotNull Mass mass) {
-        return GRAVITATIONAL_CONSTANT * mass.getSI();
+        return GRAVITATIONAL_CONSTANT * mass.getInBase();
     }
 
     //
@@ -71,12 +71,12 @@ public class MajorOrbitalBody extends AbstractOrbitalBody {
         //  Rh = R * (w / 3)^(1/3)
 
         double childMassFraction = getChildMassFraction();
-        return new Distance(radius.getSI() * getCubeRoot(childMassFraction / 3));
+        return new Distance(radius.getInBase() * getCubeRoot(childMassFraction / 3));
     }
 
     private double getChildMassFraction() throws NullParentException {
-        double childMass = mass.getSI();
-        return childMass / (childMass + getParentMass().getSI());
+        double childMass = mass.getInBase();
+        return childMass / (childMass + getParentMass().getInBase());
     }
 
     private static double getCubeRoot(double number) {

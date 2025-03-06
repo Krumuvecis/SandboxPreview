@@ -33,7 +33,7 @@ public class SectionRigging implements MassivePart, Copyable<@NotNull SectionRig
         for (@Nullable Cable @NotNull [] pair : cablePairs) {
             for (@Nullable Cable cable : pair) {
                 if (cable != null) {
-                    sum += cable.getCarryableMass(acceleration).getSI();
+                    sum += cable.getCarryableMass(acceleration).getInBase();
                 }
             }
         }
@@ -43,11 +43,11 @@ public class SectionRigging implements MassivePart, Copyable<@NotNull SectionRig
     //
     @Override
     public @NotNull Mass getMass() {
-        double sum = additionalRiggingMass.getSI();
+        double sum = additionalRiggingMass.getInBase();
         for (@Nullable Cable @NotNull [] pair : cablePairs) {
             for (@Nullable Cable cable : pair) {
                 if (cable != null) {
-                    sum += cable.getMass().getSI();
+                    sum += cable.getMass().getInBase();
                 }
             }
         }

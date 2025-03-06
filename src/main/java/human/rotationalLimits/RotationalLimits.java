@@ -86,7 +86,7 @@ public class RotationalLimits implements RotationalLimitInterface {
         // r_a / h = ( a_ct(R) - a_ct(R-h) ) / a_ct(R) / h = (omega^2 * R - omega^2 * (R - h)) / omega^2 / R / h
         // r_a / h = (R - R + h) / R / h
         // r_a / h = 1 / R
-        return 1 / radius.getSI();
+        return 1 / radius.getInBase();
     }
 
     //

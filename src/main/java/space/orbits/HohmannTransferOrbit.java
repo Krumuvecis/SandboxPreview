@@ -29,7 +29,7 @@ public class HohmannTransferOrbit extends EllipticOrbit {
     }
 
     private double getVelocity(double parentSpecificGravity, Distance radius) {
-        return Math.sqrt(parentSpecificGravity * (2 / radius.getSI() - 1 / getSemiMajorAxis().getSI()));
+        return Math.sqrt(parentSpecificGravity * (2 / radius.getInBase() - 1 / getSemiMajorAxis().getInBase()));
     }
 
     //
@@ -51,6 +51,6 @@ public class HohmannTransferOrbit extends EllipticOrbit {
     }
 
     private static double getCircularVelocity(double parentSpecificGravity, Distance radius) {
-        return Math.sqrt(parentSpecificGravity / radius.getSI());
+        return Math.sqrt(parentSpecificGravity / radius.getInBase());
     }
 }

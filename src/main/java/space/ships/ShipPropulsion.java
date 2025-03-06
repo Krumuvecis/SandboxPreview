@@ -31,17 +31,17 @@ public class ShipPropulsion implements MassiveShipPart {
 
     public Mass getRequiredFuelMass(double deltaV, Mass shipMass) {
         // m_fuel = ship_mass * eCoefficient
-        return new Mass(shipMass.getSI() * getECoefficient(deltaV));
+        return new Mass(shipMass.getInBase() * getECoefficient(deltaV));
     }
 
     public double getAvailableDeltaV(Mass shipMass, Mass fuelMass) {
         // deltaV = ve * ln(m_fuel / m_ship + 1)
-        return exhaustVelocity * Math.log(fuelMass.getSI() / shipMass.getSI() + 1);
+        return exhaustVelocity * Math.log(fuelMass.getInBase() / shipMass.getInBase() + 1);
     }
 
     public Mass getAvailableCargo(double deltaV, Mass shipMass, Mass fuelMass) {
         // m_fuel = (ship_mass + cargo) * eCoefficient
         // cargo = m_fuel / eCoefficient - ship_mass
-        return new Mass(fuelMass.getSI() / getECoefficient(deltaV) - shipMass.getSI());
+        return new Mass(fuelMass.getInBase() / getECoefficient(deltaV) - shipMass.getInBase());
     }
 }

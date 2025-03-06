@@ -54,14 +54,14 @@ class RotatingHabitat {
         double totalSurfaceArea = CAPSULES_PER_HABITAT * getSurfaceAreaOfSingleCapsule();
         return new Mass(getStructuralLayerMass(totalSurfaceArea)
                 + getRadiationIsolationMass(totalSurfaceArea)
-                + furniture.getSI());
+                + furniture.getInBase());
     }
 
     private static double getStructuralLayerMass(double totalSurfaceArea) {
-        return totalSurfaceArea * THICKNESS_STRUCTURAL_LAYER.getSI() * DENSITY_STRUCTURAL_LAYER;
+        return totalSurfaceArea * THICKNESS_STRUCTURAL_LAYER.getInBase() * DENSITY_STRUCTURAL_LAYER;
     }
 
     private static double getRadiationIsolationMass(double totalSurfaceArea) {
-        return totalSurfaceArea * THICKNESS_RADIATION_ISOLATION.getSI() * DENSITY_RADIATION_ISOLATION;
+        return totalSurfaceArea * THICKNESS_RADIATION_ISOLATION.getInBase() * DENSITY_RADIATION_ISOLATION;
     }
 }

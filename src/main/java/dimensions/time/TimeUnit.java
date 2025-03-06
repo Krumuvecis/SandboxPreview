@@ -4,7 +4,8 @@ import org.jetbrains.annotations.NotNull;
 
 import dimensions.DimensionalUnit;
 
-//Units of time.
+//Units of time. TODO: add docs
+@SuppressWarnings("MissingJavadoc")
 public enum TimeUnit implements DimensionalUnit {
     MS("ms", "milliseconds"),
     S("s", "seconds"),

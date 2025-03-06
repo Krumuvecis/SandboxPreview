@@ -52,7 +52,7 @@ class SectionCellContainer implements MassivePart {
         iterate(new CellActionInterface() {
             @Override
             public void action(@NotNull HabitatSectionCell cell, int lengthIndex, int widthIndex) {
-                sum[0] += cell.getMass().getSI();
+                sum[0] += cell.getMass().getInBase();
             }
         });
         return new Mass(sum[0]);

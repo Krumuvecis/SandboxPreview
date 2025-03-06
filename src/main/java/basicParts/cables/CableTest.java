@@ -52,7 +52,7 @@ public class CableTest {
         @NotNull Mass
                 selfMass = cable.getMass(),
                 carryableMass = cable.getCarryableMass(ACCELERATION);
-        double massRatio = carryableMass.getSI() / selfMass.getSI();
+        double massRatio = carryableMass.getInBase() / selfMass.getInBase();
         printLine(INDENT +
                 "Length: " + length.getValueAndShortUnit(DistanceUnit.KM) + ", " +
                 "self mass: " + selfMass.getValueAndShortUnit(MassUnit.T) + ", " +

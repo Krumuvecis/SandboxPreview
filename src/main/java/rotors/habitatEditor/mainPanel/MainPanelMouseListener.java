@@ -176,7 +176,7 @@ final class MainPanelMouseListener extends AbstractMouseListener {
             @NotNull List<@NotNull HabitatSection> sections = habitat.getSections();
             @NotNull HabitatSection section = sections.get(activeSectionIndex);
             double
-                    cellSize = HabitatSectionCell.CELL_SIZE.getSI(),
+                    cellSize = HabitatSectionCell.CELL_SIZE.getInBase(),
                     sectionStartX_actual = habitat.getLength(activeSectionIndex - 1) * cellSize,
                     sectionWidth_actual = section.getSize()[1] * cellSize,
                     sectionStartY_actual = -sectionWidth_actual / 2;
@@ -198,7 +198,7 @@ final class MainPanelMouseListener extends AbstractMouseListener {
             @NotNull List<@NotNull HabitatSection> sections = habitat.getSections();
             @NotNull HabitatSection section = sections.get(activeSectionIndex_byX);
             double
-                    sectionWidth_actual = section.getSize()[1] * HabitatSectionCell.CELL_SIZE.getSI(),
+                    sectionWidth_actual = section.getSize()[1] * HabitatSectionCell.CELL_SIZE.getInBase(),
                     sectionStartY_actual = -sectionWidth_actual / 2;
             if (mouseActualLocation_absolute[1] >= sectionStartY_actual
                     && mouseActualLocation_absolute[1] < sectionStartY_actual + sectionWidth_actual) {
@@ -214,7 +214,7 @@ final class MainPanelMouseListener extends AbstractMouseListener {
             @NotNull List<@NotNull HabitatSection> sections = habitat.getSections();
             for (int sectionIndex = 0; sectionIndex < sections.size(); sectionIndex ++) {
                 double
-                        cellSize = HabitatSectionCell.CELL_SIZE.getSI(),
+                        cellSize = HabitatSectionCell.CELL_SIZE.getInBase(),
                         sectionStartX = habitat.getLength(sectionIndex - 1) * cellSize,
                         sectionEndX = habitat.getLength(sectionIndex) * cellSize;
                 if (mouseActualLocation_absolute[0] >= sectionStartX) {

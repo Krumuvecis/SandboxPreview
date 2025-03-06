@@ -31,7 +31,7 @@ public class RotatingHabitatSystem {
     public @NotNull Mass getMass() {
         double sum = 0;
         for (RotatingHabitat habitat : habitats) {
-            sum += habitat.getMass().getSI();
+            sum += habitat.getMass().getInBase();
         }
         return new Mass(sum);
     }

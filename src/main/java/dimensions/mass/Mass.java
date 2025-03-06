@@ -1,82 +1,63 @@
 package dimensions.mass;
 
-import java.util.Collections;
-import java.util.Map;
+import java.util.List;
+import java.util.ArrayList;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import dimensions.ConversionRatiosInitializer;
+import dimensions.DimensionName;
+import dimensions.ConversionManager;
 import dimensions.DimensionalValue;
 
-//
-public final class Mass extends DimensionalValue<@NotNull MassUnit, @NotNull Mass>
-        implements ConversionRatiosInitializer<@NotNull MassUnit> {
-    private static final @NotNull MassUnit SI_UNIT = MassUnit.KG;
-    private static final double
-            KG_TO_G = 1000,
-            T_TO_KG = 1000,
-            EARTH_MASS_TO_KG = 5.972 * Math.pow(10, 24),
-            JUPITER_MASS_TO_KG = 1.899 * Math.pow(10, 27),
-            SOLAR_MASS_TO_KG = 1.9855 * Math.pow(10, 30);
-    private static final @NotNull Map<@NotNull MassUnit, @NotNull Map<@NotNull MassUnit, @NotNull Double>>
-            CONVERSION_RATIOS;
+//TODO: add docs
+@SuppressWarnings("MissingJavadoc")
+public final class Mass extends DimensionalValue<@NotNull MassUnit, @NotNull Mass> {
+    private static final @NotNull DimensionName
+            DIMENSION_NAME = new DimensionName("Mass", "mass");
+    private static final @NotNull MassUnit BASE_UNIT = MassUnit.KG;
+    private static final @NotNull MassConversion CONVERSION = new MassConversion(DIMENSION_NAME, BASE_UNIT);
 
-    static {
-        @NotNull Map<@NotNull MassUnit, @NotNull Map<@NotNull MassUnit, @NotNull Double>>
-                ratios = ConversionRatiosInitializer.initializeConversionMap(MassUnit.values());
-        new Mass().populateConversionRatios(ratios);
-        CONVERSION_RATIOS = Collections.unmodifiableMap(ratios);
-    }
-
-    //custom units, null - SI
+    //custom units, null - base
     public Mass(double value, @Nullable MassUnit unit) {
-        super("Mass", SI_UNIT, value, unit, CONVERSION_RATIOS);
+        super(DIMENSION_NAME, CONVERSION, value, unit);
     }
 
-    //default units, SI
+    //base units
     public Mass(double value) {
         this(value, null);
     }
 
-    //for conversion ratio initialization
-    private Mass() {
-        this(0);
-    }
-
-    //
-    @Override
-    public void populateConversionRatios(
-            @NotNull Map<@NotNull MassUnit, @NotNull Map<@NotNull MassUnit, @NotNull Double>> ratios) {
-        //kg
-        addConversions(ratios, MassUnit.KG, MassUnit.G, KG_TO_G);
-
-        //tonne
-        addConversions(ratios, MassUnit.T, MassUnit.KG, T_TO_KG);
-        addConversions(ratios, MassUnit.T, MassUnit.G, T_TO_KG * KG_TO_G);
-
-        //earth mass
-        addConversions(ratios, MassUnit.EARTH_MASS, MassUnit.KG, EARTH_MASS_TO_KG);
-        addConversions(ratios, MassUnit.EARTH_MASS, MassUnit.T, EARTH_MASS_TO_KG / T_TO_KG);
-        addConversions(ratios, MassUnit.EARTH_MASS, MassUnit.G, EARTH_MASS_TO_KG * KG_TO_G);
-
-        //jupiter mass
-        addConversions(ratios, MassUnit.JUPITER_MASS, MassUnit.KG, JUPITER_MASS_TO_KG);
-        addConversions(ratios, MassUnit.JUPITER_MASS, MassUnit.EARTH_MASS, JUPITER_MASS_TO_KG / EARTH_MASS_TO_KG);
-        addConversions(ratios, MassUnit.JUPITER_MASS, MassUnit.T, JUPITER_MASS_TO_KG / T_TO_KG);
-        addConversions(ratios, MassUnit.JUPITER_MASS, MassUnit.G, JUPITER_MASS_TO_KG * KG_TO_G);
-
-        //solar mass
-        addConversions(ratios, MassUnit.SOLAR_MASS, MassUnit.KG, SOLAR_MASS_TO_KG);
-        addConversions(ratios, MassUnit.SOLAR_MASS, MassUnit.JUPITER_MASS, SOLAR_MASS_TO_KG / JUPITER_MASS_TO_KG);
-        addConversions(ratios, MassUnit.SOLAR_MASS, MassUnit.EARTH_MASS, SOLAR_MASS_TO_KG / EARTH_MASS_TO_KG);
-        addConversions(ratios, MassUnit.SOLAR_MASS, MassUnit.T, SOLAR_MASS_TO_KG / T_TO_KG);
-        addConversions(ratios, MassUnit.SOLAR_MASS, MassUnit.G, SOLAR_MASS_TO_KG * KG_TO_G);
-    }
-
-    //
+    //preserves units
     @Override
     public @NotNull Mass copy() {
         return new Mass(getValue(), getUnit());
+    }
+
+    //
+    private static final class MassConversion extends ConversionManager<@NotNull MassUnit> {
+        private static final double
+                KG_TO_G = 1000,
+                T_TO_KG = 1000,
+                EARTH_MASS_TO_KG = 5.972 * Math.pow(10, 24),
+                JUPITER_MASS_TO_KG = 1.899 * Math.pow(10, 27),
+                SOLAR_MASS_TO_KG = 1.9855 * Math.pow(10, 30);
+
+        //
+        MassConversion(@NotNull DimensionName dimensionName, @NotNull MassUnit baseUnit) {
+            super(dimensionName, baseUnit);
+        }
+
+        //
+        @Override
+        public @NotNull List<@NotNull ConversionRatioTemplate<@NotNull MassUnit>> getRatioTemplates() {
+            return new ArrayList<>() {{
+                add(new ConversionRatioTemplate<>(MassUnit.KG, MassUnit.G, KG_TO_G));
+                add(new ConversionRatioTemplate<>(MassUnit.T, MassUnit.KG, T_TO_KG));
+                add(new ConversionRatioTemplate<>(MassUnit.EARTH_MASS, MassUnit.KG, EARTH_MASS_TO_KG));
+                add(new ConversionRatioTemplate<>(MassUnit.JUPITER_MASS, MassUnit.KG, JUPITER_MASS_TO_KG));
+                add(new ConversionRatioTemplate<>(MassUnit.SOLAR_MASS, MassUnit.KG, SOLAR_MASS_TO_KG));
+            }};
+        }
     }
 }

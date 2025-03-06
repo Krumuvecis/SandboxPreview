@@ -4,7 +4,8 @@ import org.jetbrains.annotations.NotNull;
 
 import dimensions.DimensionalUnit;
 
-//Units of distance.
+//Units of distance. TODO: add docs
+@SuppressWarnings("MissingJavadoc")
 public enum DistanceUnit implements DimensionalUnit {
     M("m", "meters"),
     KM("km", "kilometers"),

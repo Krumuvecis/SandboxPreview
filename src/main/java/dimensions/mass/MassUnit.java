@@ -4,7 +4,8 @@ import org.jetbrains.annotations.NotNull;
 
 import dimensions.DimensionalUnit;
 
-//Units of mass.
+//Units of mass. TODO: add docs
+@SuppressWarnings("MissingJavadoc")
 public enum MassUnit implements DimensionalUnit {
     G("g", "grams"),
     KG("kg", "kilograms"),

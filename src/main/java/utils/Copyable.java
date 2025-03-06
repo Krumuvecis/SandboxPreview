@@ -5,5 +5,6 @@ import org.jetbrains.annotations.NotNull;
 //TODO: add docs
 @SuppressWarnings("MissingJavadoc")
 public interface Copyable<T extends @NotNull Copyable<T>> {
-    @NotNull T copy();
+    //
+    T copy();
 }

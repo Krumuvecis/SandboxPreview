@@ -13,19 +13,20 @@ abstract class DimensionalValueTest<
     private static final @NotNull String INDENT = "  ";
 
     //
-    DimensionalValueTest(@NotNull T dimensionalValue, @NotNull List<@NotNull U> units) {
-        printLine("Testing " + dimensionalValue.getDimensionName() + ", " + dimensionalValue.getValueAndShortUnit());
+    DimensionalValueTest(T dimensionalValue, @NotNull List<U> units) {
+        printLine("Testing " + dimensionalValue.getDimensionName().getNameLowercase() +
+                ", " + dimensionalValue.getValueAndShortUnit());
         printConvertedLines(dimensionalValue, units);
         printLine("");
     }
 
-    private void printConvertedLines(@NotNull T dimensionalValue, @NotNull List<@NotNull U> units) {
-        for (@NotNull U unit : units) {
+    private void printConvertedLines(T dimensionalValue, @NotNull List<U> units) {
+        for (U unit : units) {
             printConvertedLine(dimensionalValue, unit);
         }
     }
 
-    private void printConvertedLine(@NotNull T dimensionalValue, @NotNull U unit) {
+    private void printConvertedLine(T dimensionalValue, U unit) {
         printLine(INDENT + dimensionalValue.getValueAndShortUnit(unit));
     }
 }

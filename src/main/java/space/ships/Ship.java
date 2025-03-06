@@ -23,7 +23,7 @@ public class Ship {
 
     //
     public Mass getDryMass() {
-        return new Mass(propulsion.getMass().getSI() + fuelTanks.getMass().getSI() + accommodations.getMass().getSI());
+        return new Mass(propulsion.getMass().getInBase() + fuelTanks.getMass().getInBase() + accommodations.getMass().getInBase());
     }
 
     //
@@ -41,10 +41,10 @@ public class Ship {
         public FuelTanks(Mass fuelMass, double fuelDensity, double tankMaterialDensity, Distance tankThickness) {
             maxFuel = fuelMass;
             double
-                    fuelVolume = fuelMass.getSI() / fuelDensity,
+                    fuelVolume = fuelMass.getInBase() / fuelDensity,
                     radius = Math.pow(3 * fuelVolume / 4 / Math.PI, 1.0/3),
                     area = 4 * Math.PI * Math.pow(radius, 2);
-            dryMass = new Mass(area * tankThickness.getSI() * tankMaterialDensity);
+            dryMass = new Mass(area * tankThickness.getInBase() * tankMaterialDensity);
         }
 
         //dry mass

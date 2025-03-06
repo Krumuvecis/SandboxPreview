@@ -24,7 +24,7 @@ public class ShipCrew {
 
     private double getDailyFoodConsumption(HumanRequirements humanRequirements) {
         int people = crewComposition.get(humanRequirements);
-        return people * humanRequirements.dailyFoodConsumption.getSI();
+        return people * humanRequirements.dailyFoodConsumption.getInBase();
     }
 
     //
@@ -38,7 +38,7 @@ public class ShipCrew {
 
     private double getDailyWaterConsumption(HumanRequirements humanRequirements) {
         int people = crewComposition.get(humanRequirements);
-        return people * humanRequirements.dailyWaterConsumption.getSI();
+        return people * humanRequirements.dailyWaterConsumption.getInBase();
     }
 
     //
@@ -52,7 +52,7 @@ public class ShipCrew {
 
     private double getTotalLuggage(HumanRequirements humanRequirements) {
         int people = crewComposition.get(humanRequirements);
-        return people * humanRequirements.luggagePerPerson.getSI();
+        return people * humanRequirements.luggagePerPerson.getInBase();
     }
 
     //

@@ -29,12 +29,12 @@ public class RotationFormulae {
 
     //SI
     public static double getCircleArea(@NotNull Distance radius) {
-        return Math.PI * Math.pow(radius.getSI(), 2);
+        return Math.PI * Math.pow(radius.getInBase(), 2);
     }
 
     //
     public static double getArcAngle(@NotNull Distance radius, @NotNull Distance arcLength) {
-        return FULL_ANGLE * getCircleCircumference(radius).getSI() / arcLength.getSI();
+        return FULL_ANGLE * getCircleCircumference(radius).getInBase() / arcLength.getInBase();
     }
 
     //angularVelocity in rad/s
@@ -44,7 +44,7 @@ public class RotationFormulae {
 
     //in rad/s
     public static double getAngularVelocity_fromPeriod(@NotNull Time period) {
-        return FULL_ANGLE / period.getSI();
+        return FULL_ANGLE / period.getInBase();
     }
 
     //in rad/s

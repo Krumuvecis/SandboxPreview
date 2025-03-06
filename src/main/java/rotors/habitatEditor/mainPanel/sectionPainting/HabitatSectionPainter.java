@@ -6,6 +6,7 @@ import java.awt.Graphics;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import rotors.habitatEditor.mainPanel.sectionPainting.sectionInfo.SectionInfoPainter;
 import rotors.modularHabitat.HabitatSectionCell;
 import rotors.modularHabitat.habitatSection.HabitatSection;
 import rotors.habitatEditor.window.UserData;
@@ -23,8 +24,8 @@ public interface HabitatSectionPainter extends CellPainter, SectionInfoPainter {
                               boolean activeSection, int @Nullable [] activeCellLocation) {
         int @NotNull [] sectionSize = section.getSize();
         double
-                sectionLengthDraw = sectionSize[0] * HabitatSectionCell.CELL_SIZE.getSI() * scale,
-                sectionWidthDraw = sectionSize[1] * HabitatSectionCell.CELL_SIZE.getSI() * scale,
+                sectionLengthDraw = sectionSize[0] * HabitatSectionCell.CELL_SIZE.getInBase() * scale,
+                sectionWidthDraw = sectionSize[1] * HabitatSectionCell.CELL_SIZE.getInBase() * scale,
                 drawY = sectionCenterY_drawable - sectionWidthDraw / 2;
         double @NotNull [] paintLocation = new double[] {sectionStartX_drawable, drawY};
         paintCellGrid(g, paintLocation, scale, section, activeTab, activeSection, activeCellLocation);
@@ -42,7 +43,7 @@ public interface HabitatSectionPainter extends CellPainter, SectionInfoPainter {
                                boolean isActiveSection, int @Nullable [] activeCellLocation) {
         section.iterateCells((cell, lengthIndex, widthIndex) -> { //lambda
             //determines cell's draw location
-            double scaledCellSize = HabitatSectionCell.CELL_SIZE.getSI() * scale;
+            double scaledCellSize = HabitatSectionCell.CELL_SIZE.getInBase() * scale;
             double @NotNull []
                     paintLocation = new double[] {
                             sectionLocationDrawable[0] + scaledCellSize * lengthIndex,

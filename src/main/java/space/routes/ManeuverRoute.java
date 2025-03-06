@@ -83,7 +83,7 @@ public class ManeuverRoute {
     private double getTotalTransferTime(List<HohmannRouteElement> route) {
         double sum = 0;
         for (HohmannRouteElement element : route) {
-            sum += element.transferOrbit.getTransferTime(element.parent.getSpecificGravity()).getSI();
+            sum += element.transferOrbit.getTransferTime(element.parent.getSpecificGravity()).getInBase();
         }
         return sum;
     }
@@ -141,7 +141,7 @@ public class ManeuverRoute {
             Distance rp;
             if (body instanceof @NotNull MajorOrbitalBody major) {
                 Distance rp_h = major.getHillRadiusAtSemiMajorAis();
-                rp = new Distance(rp_0.getSI() + rp_h.getSI());
+                rp = new Distance(rp_0.getInBase() + rp_h.getInBase());
             } else {
                 rp = rp_0;
             }
@@ -189,7 +189,7 @@ public class ManeuverRoute {
             Distance rp;
             if (body instanceof @NotNull MajorOrbitalBody major) {
                 Distance rp_h = major.getHillRadiusAtSemiMajorAis();
-                rp = new Distance(rp_0.getSI() + rp_h.getSI());
+                rp = new Distance(rp_0.getInBase() + rp_h.getInBase());
             } else {
                 rp = rp_0;
             }
@@ -235,14 +235,14 @@ public class ManeuverRoute {
 
             boolean outwards;
             Distance rp, ra;
-            if (a1.getSI() + rh1.getSI() <= a2.getSI() - rh2.getSI()) {
+            if (a1.getInBase() + rh1.getInBase() <= a2.getInBase() - rh2.getInBase()) {
                 outwards = true;
-                rp = new Distance(a1.getSI() + rh1.getSI());
-                ra = new Distance(a2.getSI() - rh2.getSI());
-            } else if (a1.getSI() - rh1.getSI() >= a2.getSI() + rh2.getSI()) {
+                rp = new Distance(a1.getInBase() + rh1.getInBase());
+                ra = new Distance(a2.getInBase() - rh2.getInBase());
+            } else if (a1.getInBase() - rh1.getInBase() >= a2.getInBase() + rh2.getInBase()) {
                 outwards = false;
-                rp = new Distance(a2.getSI() + rh2.getSI());
-                ra = new Distance(a1.getSI() - rh1.getSI());
+                rp = new Distance(a2.getInBase() + rh2.getInBase());
+                ra = new Distance(a1.getInBase() - rh1.getInBase());
             } else {
                 throw new RuntimeException("Overlapping orbits not supported.");
             }

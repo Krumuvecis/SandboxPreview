@@ -1,4 +1,4 @@
-package rotors.habitatEditor.mainPanel.sectionPainting;
+package rotors.habitatEditor.mainPanel.sectionPainting.sectionInfo;
 
 import java.awt.Color;
 
@@ -32,7 +32,7 @@ final class SectionInfoLines {
     //
     static @NotNull ColoredLine dryCarriedMass(@NotNull Mass dryCarriedMass, @NotNull Mass carryableMass) {
         //TODO: colors?
-        double dryVsCarryableRatio = dryCarriedMass.getSI() / carryableMass.getSI();
+        double dryVsCarryableRatio = dryCarriedMass.getInBase() / carryableMass.getInBase();
         return new ColoredLine("Dry carried mass: " +
                 getMassString(dryCarriedMass) + " / " + getMassString(carryableMass) + ", " +
                 doubleToString(dryVsCarryableRatio * 100, 1) + " %");
@@ -49,7 +49,7 @@ final class SectionInfoLines {
     //
     static @NotNull ColoredLine cellsMass(@NotNull Mass cellsMass, @NotNull Mass cellsMassCapacity_total,
                                           boolean cellsMassExceeded) {
-        double cellsMassCapacityFullness = cellsMass.getSI() / cellsMassCapacity_total.getSI();
+        double cellsMassCapacityFullness = cellsMass.getInBase() / cellsMassCapacity_total.getInBase();
         @NotNull String line = "Cells' mass: " +
                 getMassString(cellsMass) + " / " + getMassString(cellsMassCapacity_total) + ", " +
                 doubleToString(cellsMassCapacityFullness * 100, 1) + " %";
@@ -62,7 +62,7 @@ final class SectionInfoLines {
     static @NotNull ColoredLine remainingCellsMass(@NotNull Mass cellsMassCapacity_remaining,
                                                    @NotNull Mass cellsMassCapacity_total,
                                                    boolean cellsMassExceeded) {
-        double remainingCellsMassCapacityRatio = cellsMassCapacity_remaining.getSI() / cellsMassCapacity_total.getSI();
+        double remainingCellsMassCapacityRatio = cellsMassCapacity_remaining.getInBase() / cellsMassCapacity_total.getInBase();
         @NotNull String line = "Remaining cells' mass capacity: " +
                 getMassString(cellsMassCapacity_remaining) + " ," +
                 doubleToString(remainingCellsMassCapacityRatio * 100, 1) + " %";
@@ -85,7 +85,7 @@ final class SectionInfoLines {
 
     //
     static @NotNull ColoredLine totalCarriedMass(@NotNull Mass carriedMass, @NotNull Mass carryableMass) {
-        double carriedVsCarryableRatio = carriedMass.getSI() / carryableMass.getSI();
+        double carriedVsCarryableRatio = carriedMass.getInBase() / carryableMass.getInBase();
         @Nullable Color color = null;
         if (carriedVsCarryableRatio > 1) {
             //too much overall carried mass
@@ -105,32 +105,5 @@ final class SectionInfoLines {
         @NotNull MassUnit commonMassUnit = MassUnit.T;
         int decimalPlaces = 1;
         return mass.getValueAndShortUnit(commonMassUnit, decimalPlaces);
-    }
-
-    //
-    static final class ColoredLine {
-        private final @NotNull String line;
-        private final @Nullable Color color;
-
-        //
-        ColoredLine(@NotNull String line, @Nullable Color color) {
-            this.line = line;
-            this.color = color;
-        }
-
-        //
-        ColoredLine(@NotNull String line) {
-            this(line, null);
-        }
-
-        //
-        public @NotNull String line() {
-            return line;
-        }
-
-        //
-        public @Nullable Color color() {
-            return color;
-        }
     }
 }

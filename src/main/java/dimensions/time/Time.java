@@ -1,101 +1,67 @@
 package dimensions.time;
 
-import java.util.Collections;
-import java.util.Map;
+import java.util.List;
+import java.util.ArrayList;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import dimensions.ConversionRatiosInitializer;
+import dimensions.DimensionName;
+import dimensions.ConversionManager;
 import dimensions.DimensionalValue;
 
-//
-public final class Time extends DimensionalValue<@NotNull TimeUnit, @NotNull Time>
-        implements ConversionRatiosInitializer<@NotNull TimeUnit> {
-    private static final @NotNull TimeUnit SI_UNIT = TimeUnit.S;
-    private static final double
-            S_TO_MS = 1000,
-            MIN_TO_S = 60,
-            H_TO_MIN = 60,
-            DAY_TO_H = 24,
-            WEEK_TO_DAY = 7,
-            YEAR_TO_MONTH = 12,
-            YEAR_TO_DAY = 365.25;
-    private static final @NotNull Map<@NotNull TimeUnit, @NotNull Map<@NotNull TimeUnit, @NotNull Double>>
-            CONVERSION_RATIOS;
+//TODO: add docs
+@SuppressWarnings("MissingJavadoc")
+public final class Time extends DimensionalValue<@NotNull TimeUnit, @NotNull Time> {
+    private static final @NotNull DimensionName
+            DIMENSION_NAME = new DimensionName("Time", "time");
+    private static final @NotNull TimeUnit BASE_UNIT = TimeUnit.S;
+    private static final @NotNull TimeConversion CONVERSION = new TimeConversion(DIMENSION_NAME, BASE_UNIT);
 
-    static {
-        @NotNull Map<@NotNull TimeUnit, @NotNull Map<@NotNull TimeUnit, @NotNull Double>>
-                ratios = ConversionRatiosInitializer.initializeConversionMap(TimeUnit.values());
-        new Time().populateConversionRatios(ratios);
-        CONVERSION_RATIOS = Collections.unmodifiableMap(ratios);
-    }
-
-    //custom units, null - SI
+    //custom units, null - base
     public Time(double value, @Nullable TimeUnit unit) {
-        super("Time", SI_UNIT, value, unit, CONVERSION_RATIOS);
+        super(DIMENSION_NAME, CONVERSION, value, unit);
     }
 
-    //default units, SI
+    //base units
     public Time(double value) {
         this(value, null);
     }
 
-    //for conversion ratio initialization
-    private Time() {
-        this(0);
-    }
-
-    //
-    @Override
-    public void populateConversionRatios(
-            @NotNull Map<@NotNull TimeUnit, @NotNull Map<@NotNull TimeUnit, @NotNull Double>> ratios) {
-        //seconds
-        addConversions(ratios, TimeUnit.S, TimeUnit.MS, S_TO_MS);
-
-        //minutes
-        addConversions(ratios, TimeUnit.MIN, TimeUnit.MS, MIN_TO_S * S_TO_MS);
-        addConversions(ratios, TimeUnit.MIN, TimeUnit.S, MIN_TO_S);
-
-        //hours
-        addConversions(ratios, TimeUnit.H, TimeUnit.MS, H_TO_MIN * MIN_TO_S * S_TO_MS);
-        addConversions(ratios, TimeUnit.H, TimeUnit.S, H_TO_MIN * MIN_TO_S);
-        addConversions(ratios, TimeUnit.H, TimeUnit.MIN, H_TO_MIN);
-
-        //days
-        addConversions(ratios, TimeUnit.DAY, TimeUnit.MS, DAY_TO_H * H_TO_MIN * MIN_TO_S * S_TO_MS);
-        addConversions(ratios, TimeUnit.DAY, TimeUnit.S, DAY_TO_H * H_TO_MIN * MIN_TO_S);
-        addConversions(ratios, TimeUnit.DAY, TimeUnit.MIN, DAY_TO_H * H_TO_MIN);
-        addConversions(ratios, TimeUnit.DAY, TimeUnit.H, DAY_TO_H);
-
-        //weeks
-        addConversions(ratios, TimeUnit.WEEK, TimeUnit.MS, WEEK_TO_DAY * DAY_TO_H * H_TO_MIN * MIN_TO_S * S_TO_MS);
-        addConversions(ratios, TimeUnit.WEEK, TimeUnit.S, WEEK_TO_DAY * DAY_TO_H * H_TO_MIN * MIN_TO_S);
-        addConversions(ratios, TimeUnit.WEEK, TimeUnit.MIN, WEEK_TO_DAY * DAY_TO_H * H_TO_MIN);
-        addConversions(ratios, TimeUnit.WEEK, TimeUnit.H, WEEK_TO_DAY * DAY_TO_H);
-        addConversions(ratios, TimeUnit.WEEK, TimeUnit.DAY, WEEK_TO_DAY);
-
-        //months
-        addConversions(ratios, TimeUnit.MONTH, TimeUnit.MS, YEAR_TO_DAY * DAY_TO_H * H_TO_MIN * MIN_TO_S * S_TO_MS / YEAR_TO_MONTH);
-        addConversions(ratios, TimeUnit.MONTH, TimeUnit.S, YEAR_TO_DAY * DAY_TO_H * H_TO_MIN * MIN_TO_S / YEAR_TO_MONTH);
-        addConversions(ratios, TimeUnit.MONTH, TimeUnit.MIN, YEAR_TO_DAY * DAY_TO_H * H_TO_MIN / YEAR_TO_MONTH);
-        addConversions(ratios, TimeUnit.MONTH, TimeUnit.H, YEAR_TO_DAY * DAY_TO_H / YEAR_TO_MONTH);
-        addConversions(ratios, TimeUnit.MONTH, TimeUnit.DAY, YEAR_TO_DAY / YEAR_TO_MONTH);
-        addConversions(ratios, TimeUnit.MONTH, TimeUnit.WEEK, YEAR_TO_DAY / YEAR_TO_MONTH / WEEK_TO_DAY);
-
-        //years
-        addConversions(ratios, TimeUnit.YEAR, TimeUnit.MS, YEAR_TO_DAY * DAY_TO_H * H_TO_MIN * MIN_TO_S * S_TO_MS);
-        addConversions(ratios, TimeUnit.YEAR, TimeUnit.S, YEAR_TO_DAY * DAY_TO_H * H_TO_MIN * MIN_TO_S);
-        addConversions(ratios, TimeUnit.YEAR, TimeUnit.MIN, YEAR_TO_DAY * DAY_TO_H * H_TO_MIN);
-        addConversions(ratios, TimeUnit.YEAR, TimeUnit.H, YEAR_TO_DAY * DAY_TO_H);
-        addConversions(ratios, TimeUnit.YEAR, TimeUnit.DAY, YEAR_TO_DAY);
-        addConversions(ratios, TimeUnit.YEAR, TimeUnit.WEEK, YEAR_TO_DAY / WEEK_TO_DAY);
-        addConversions(ratios, TimeUnit.YEAR, TimeUnit.MONTH, YEAR_TO_MONTH);
-    }
-
-    //
+    //preserves units
     @Override
     public @NotNull Time copy() {
         return new Time(getValue(), getUnit());
+    }
+
+    //
+    private static final class TimeConversion extends ConversionManager<@NotNull TimeUnit> {
+        private static final double
+                S_TO_MS = 1000,
+                MIN_TO_S = 60,
+                H_TO_MIN = 60,
+                DAY_TO_H = 24,
+                WEEK_TO_DAY = 7,
+                YEAR_TO_MONTH = 12,
+                YEAR_TO_DAY = 365.25;
+
+        //
+        TimeConversion(@NotNull DimensionName dimensionName, @NotNull TimeUnit baseUnit) {
+            super(dimensionName, baseUnit);
+        }
+
+        //
+        @Override
+        public @NotNull List<@NotNull ConversionRatioTemplate<@NotNull TimeUnit>> getRatioTemplates() {
+            return new ArrayList<>() {{
+                add(new ConversionRatioTemplate<>(TimeUnit.S, TimeUnit.MS, S_TO_MS));
+                add(new ConversionRatioTemplate<>(TimeUnit.MIN, TimeUnit.S, MIN_TO_S));
+                add(new ConversionRatioTemplate<>(TimeUnit.H, TimeUnit.MIN, H_TO_MIN));
+                add(new ConversionRatioTemplate<>(TimeUnit.DAY, TimeUnit.H, DAY_TO_H));
+                add(new ConversionRatioTemplate<>(TimeUnit.WEEK, TimeUnit.DAY, WEEK_TO_DAY));
+                add(new ConversionRatioTemplate<>(TimeUnit.YEAR, TimeUnit.MONTH, YEAR_TO_MONTH));
+                add(new ConversionRatioTemplate<>(TimeUnit.YEAR, TimeUnit.DAY, YEAR_TO_DAY));
+            }};
+        }
     }
 }

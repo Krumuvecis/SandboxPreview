@@ -15,14 +15,14 @@ class ShipAccommodations implements MassiveShipPart {
 
     //
     ShipAccommodations(Time tripTime, ShipCrew crew, double staffArea, int rotorCount, int floorCount) {
-        food = new Mass(tripTime.get(TimeUnit.DAY) * crew.getDailyFoodConsumption().getSI());
-        water = new Mass(tripTime.get(TimeUnit.DAY) * crew.getDailyWaterConsumption().getSI());
+        food = new Mass(tripTime.get(TimeUnit.DAY) * crew.getDailyFoodConsumption().getInBase());
+        water = new Mass(tripTime.get(TimeUnit.DAY) * crew.getDailyWaterConsumption().getInBase());
         luggage = crew.getTotalLuggage();
         rotatingHabitats = new RotatingHabitatSystem(crew, staffArea, rotorCount, floorCount);
     }
 
     @Override
     public @NotNull Mass getMass() {
-        return new Mass(food.getSI() + water.getSI() + luggage.getSI() + rotatingHabitats.getMass().getSI());
+        return new Mass(food.getInBase() + water.getInBase() + luggage.getInBase() + rotatingHabitats.getMass().getInBase());
     }
 }

@@ -21,7 +21,7 @@ interface HabitatPainter extends HabitatSectionPainter {
         @NotNull List<@NotNull HabitatSection> sections = habitat.getSections();
         for (int i = 0; i < sections.size(); i++) {
             double
-                    sectionStartX_actualAbsolute = habitat.getLength(i - 1) * HabitatSectionCell.CELL_SIZE.getSI(),
+                    sectionStartX_actualAbsolute = habitat.getLength(i - 1) * HabitatSectionCell.CELL_SIZE.getInBase(),
                     sectionStartX_actualRelative = sectionStartX_actualAbsolute - viewLocationActual[0],
                     sectionCenterY_actualRelative = -viewLocationActual[1],
 
