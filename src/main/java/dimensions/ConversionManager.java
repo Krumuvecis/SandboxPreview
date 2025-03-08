@@ -1,6 +1,8 @@
 package dimensions;
 
 import java.util.Objects;
+import java.util.Collections;
+import java.util.Set;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
@@ -8,9 +10,12 @@ import java.util.HashMap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import static consoleUtils.SimplePrinting.printLine;
+
 //TODO: finish this
 @SuppressWarnings("MissingJavadoc")
 public abstract class ConversionManager<T extends @NotNull Enum<T> & DimensionalUnit> {
+    private static final @NotNull String INDENT = "  "; //for debugging
     private final @NotNull DimensionName dimensionName;
     private final T baseUnit;
     private final @NotNull Map<T, ? extends @NotNull Map<T, @NotNull Double>> directConversionRatios;
@@ -26,53 +31,7 @@ public abstract class ConversionManager<T extends @NotNull Enum<T> & Dimensional
         }
         return ratios;
     }
-
-    //
-    void populateConversionRatios(@NotNull Map<T, @NotNull Map<T, @NotNull Double>> ratios);
     */
-
-    //TODO: old from DimensionalUnit<>
-    /*
-    public static <T extends @NotNull Enum<T>> void addConversions(
-            @NotNull Map<T, ? extends @NotNull Map<T, @NotNull Double>> ratios,
-            T unit1, T unit2, double ratio) {
-        ratios.get(unit1).put(unit2, ratio);
-        ratios.get(unit2).put(unit1, 1 / ratio);
-    }*/
-
-    //TODO: old from Distance
-    /*
-    private static final @NotNull Map<@NotNull DistanceUnit, @NotNull Map<@NotNull DistanceUnit, @NotNull Double>>
-            CONVERSION_RATIOS;
-
-    static {
-        @NotNull Map<@NotNull DistanceUnit, @NotNull Map<@NotNull DistanceUnit, @NotNull Double>>
-                ratios = ConversionRatiosInitializer.initializeConversionMap((DistanceUnit.values()));
-        new Distance().populateConversionRatios(ratios);
-        CONVERSION_RATIOS = Collections.unmodifiableMap(ratios);
-    }
-
-    @Override
-    public void populateConversionRatios(
-            @NotNull Map<@NotNull DistanceUnit, @NotNull Map<@NotNull DistanceUnit, @NotNull Double>> ratios) {
-        //km
-        addConversions(ratios, DistanceUnit.KM, DistanceUnit.M, KM_TO_M);
-
-        //au
-        addConversions(ratios, DistanceUnit.AU, DistanceUnit.KM, AU_TO_KM);
-        addConversions(ratios, DistanceUnit.AU, DistanceUnit.M, AU_TO_KM * KM_TO_M);
-
-        //ly
-        addConversions(ratios, DistanceUnit.LY, DistanceUnit.KM, LY_TO_KM);
-        addConversions(ratios, DistanceUnit.LY, DistanceUnit.AU, LY_TO_KM / AU_TO_KM);
-        addConversions(ratios, DistanceUnit.LY, DistanceUnit.M, LY_TO_KM * KM_TO_M);
-
-        //pc
-        addConversions(ratios, DistanceUnit.PC, DistanceUnit.LY, PC_TO_LY);
-        addConversions(ratios, DistanceUnit.PC, DistanceUnit.KM, PC_TO_LY * LY_TO_KM);
-        addConversions(ratios, DistanceUnit.PC, DistanceUnit.AU, PC_TO_LY * LY_TO_KM / AU_TO_KM);
-        addConversions(ratios, DistanceUnit.PC, DistanceUnit.M, PC_TO_LY * LY_TO_KM * KM_TO_M);
-    }*/
 
     //
     public ConversionManager(@NotNull DimensionName dimensionName, T baseUnit) {
@@ -91,13 +50,13 @@ public abstract class ConversionManager<T extends @NotNull Enum<T> & Dimensional
 
     private @NotNull Map<T, ? extends @NotNull Map<T, @NotNull Double>> initializeConversionRatios(
             @NotNull List<@NotNull ConversionRatioTemplate<T>> templateList) {
-
-        //T baseUnit = getBaseUnit(); //TODO: restore this line, when done with the method as a whole
-        @NotNull Map<T, @NotNull Double> baseIntermediaryMap = new HashMap<>();
+        printLine("Initializing " + dimensionName.getNameLowercase() + " conversion ratios.");
+        //adds the base unit
         @NotNull Map<T, @NotNull Map<T, @NotNull Double>> ratioMap = new HashMap<>() {{
-            put(baseUnit, baseIntermediaryMap);
+            put(baseUnit, new HashMap<>());
         }};
 
+        /*
         while (!templateList.isEmpty()) {
             int templateCount = templateList.size();
             for (int i = 0; i < templateList.size(); i++) {
@@ -108,52 +67,93 @@ public abstract class ConversionManager<T extends @NotNull Enum<T> & Dimensional
                 double
                         directRatio = template.getRatio(),
                         directRatioInverted = 1 / directRatio;
-
-
-
-
-
-
-
-
-                //TODO: old ideas
-
-                if (from == baseUnit) { //from base
-                    //TODO: check for duplicate ratios
-                    baseIntermediaryMap.put(to, directRatio);
-                    ratioMap.put(to, new HashMap<>() {{
-                        put(baseUnit, directRatioInverted);
-                    }});
-                    templateList.remove(i);
-                    i--;
-                } else if (to == baseUnit) { //to base
-                    //TODO: check for duplicate ratios
-                    baseIntermediaryMap.put(to, directRatioInverted);
-                    ratioMap.put(from, new HashMap<>() {{
-                        put(baseUnit, directRatio);
-                    }});
-                    templateList.remove(i);
-                    i--;
-                } else { //from non-base to non-base
-                    //TODO: check for duplicate ratios here
-                    //TODO: initialize ratios here
-                }
-
-
-
-
-
             }
             if (templateCount == templateList.size()) { //template list unchanged during the last iteration
                 throw new RuntimeException(
                         dimensionName.getNameUppercase() + " conversion ratio initialization exception." +
                                 " Unable to add " + templateCount + " ratios.");
             }
+        }*/
+
+        sortTemplates(ratioMap, templateList);
+        printLine(dimensionName.getNameUppercase() + " conversion ratio initialization complete.");
+        printLine("");
+        return Collections.unmodifiableMap(ratioMap);
+    }
+
+    //TODO: finish this
+    private void sortTemplates(@NotNull Map <T, @NotNull Map<T, Double>> ratioMap,
+                               @NotNull List<@NotNull ConversionRatioTemplate<T>> templateList) {
+        for (@NotNull ConversionRatioTemplate<T> template : templateList) {
+            sortSingleTemplate(ratioMap, template);
+        }
+    }
+
+    private void sortSingleTemplate(@NotNull Map<T, @NotNull Map<T, Double>> ratioMap,
+                                    @NotNull ConversionRatioTemplate<T> template) {
+        @NotNull Set<T> alreadyDefinedUnits = ratioMap.keySet();
+        T startUnit = template.getFrom();
+        T targetUnit = template.getTo();
+
+        boolean startIsBase = startUnit == baseUnit;
+        if (!startIsBase) {
+            boolean startAlreadyDefined = alreadyDefinedUnits.contains(startUnit);
+            if (startAlreadyDefined) {
+                printLine("Start unit already defined.");
+                //throw new RuntimeException("Start unit already defined.");
+            }
+            ratioMap.put(startUnit, new HashMap<>());
         }
 
-        //TODO: make an unmodifiable map here
+        boolean targetIsBase = targetUnit == baseUnit;
+        if (!targetIsBase) {
+            boolean targetAlreadyDefined = alreadyDefinedUnits.contains(targetUnit);
+            if (targetAlreadyDefined) {
+                printLine("Target unit already defined.");
+                //throw new RuntimeException("Target unit already defined.");
+            }
+            ratioMap.put(targetUnit, new HashMap<>());
+        }
 
-        return ratioMap;
+        //direct
+        printLine(INDENT + "Adding direct conversion" +
+                " from " + startUnit.getShortName() + " to " + targetUnit.getShortName() + ".");
+        double d_direct = template.getRatio();
+        addSingleRatio(ratioMap, startUnit, targetUnit, d_direct);
+
+        if (!startIsBase || !targetIsBase) { //either start or target is non-base
+            printLine(INDENT + "Checking conversion to base and remaining units.");
+            double d_base;
+            if (startIsBase || targetIsBase) { //either one is base
+                d_base = d_direct;
+            } else { //none is base
+                d_base = d_direct * ratioMap.get(targetUnit).get(baseUnit);
+                printLine(INDENT + "Adding conversion to base.");
+                addSingleRatio(ratioMap, startUnit, baseUnit, d_base);
+            }
+
+            //remaining
+            printLine(INDENT + "Checking remaining ratios.");
+            for (T intermediateTargetUnit : alreadyDefinedUnits) {
+                if (intermediateTargetUnit != baseUnit && intermediateTargetUnit != startUnit && intermediateTargetUnit != targetUnit) {
+                    //from start to base, from base to target
+                    double d = d_base * ratioMap.get(baseUnit).get(intermediateTargetUnit);
+                    addSingleRatio(ratioMap, startUnit, intermediateTargetUnit, d);
+                }
+            }
+        }
+
+        printLine(INDENT + "Template sorted.");
+        printLine("");
+    }
+
+    private void addSingleRatio(@NotNull Map<T, @NotNull Map<T, Double>> ratioMap,
+                                T start, T target, double ratio) {
+        printLine(INDENT.repeat(2) + "Adding ratio" +
+                " from " + start.getShortName() + " to " + target.getShortName() +
+                ", ratio: " + ratio);
+        ratioMap.get(start).put(target, ratio);
+        ratioMap.get(target).put(start, 1 / ratio);
     }
 
     //null target - base
