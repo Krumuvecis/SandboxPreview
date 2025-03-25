@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/MathUtils/Dimensions/Dimensions.iml" filepath="$PROJECT_DIR$/MathUtils/Dimensions/Dimensions.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Human/Human.iml" filepath="$PROJECT_DIR$/Human/Human.iml" />
+      <module fileurl="file://$PROJECT_DIR$/LocalSandbox.iml" filepath="$PROJECT_DIR$/LocalSandbox.iml" />
+      <module fileurl="file://$PROJECT_DIR$/MathUtils/MathUtils.iml" filepath="$PROJECT_DIR$/MathUtils/MathUtils.iml" />
+      <module fileurl="file://$PROJECT_DIR$/MostCommonUtils/MostCommonUtils.iml" filepath="$PROJECT_DIR$/MostCommonUtils/MostCommonUtils.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Space/Space.iml" filepath="$PROJECT_DIR$/Space/Space.iml" />
+      <module fileurl="file://$PROJECT_DIR$/TestLife/TestLife.iml" filepath="$PROJECT_DIR$/TestLife/TestLife.iml" />
+    </modules>
+  </component>
+</project>

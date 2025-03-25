@@ -1,7 +1,7 @@
 package rotors;
 
 import dimensions.distance.Distance;
-import human.rotationalLimits.RotationalLimits;
+import humanRequirements.rotationalLimits.RotationalLimits;
 
 //
 public abstract class RotorGeometry {

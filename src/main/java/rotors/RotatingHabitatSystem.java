@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import org.jetbrains.annotations.NotNull;
 
 import dimensions.mass.Mass;
-import human.ShipCrew;
+import shipCrew_old.ShipCrew;
 
 //
 // total angular momentum = 0

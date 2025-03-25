@@ -1,7 +1,7 @@
 # IntelliJ generated files
-/.idea/
-*.iml
+#/.idea/
 
 # Maven generated files with potentially sensitive data
 /target/maven-status/
 /target/surefire-reports/
+/out/

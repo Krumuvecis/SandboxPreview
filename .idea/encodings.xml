@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/Human/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/Human/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/MathUtils/Dimensions/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/MathUtils/Dimensions/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/MathUtils/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/MathUtils/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/MostCommonUtils/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/MostCommonUtils/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/Space/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/Space/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/TestLife/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/TestLife/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/testChild/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/testChild/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/testChild2/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/testChild2/src/main/resources" charset="UTF-8" />
+  </component>
+</project>

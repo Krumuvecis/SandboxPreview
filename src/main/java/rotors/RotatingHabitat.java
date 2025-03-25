@@ -5,8 +5,8 @@ import org.jetbrains.annotations.NotNull;
 import dimensions.distance.Distance;
 import dimensions.mass.Mass;
 
-import human.rotationalLimits.RotationalLimits;
-import human.rotationalLimits.particularRotationalLimits.CivilianRotationalLimits;
+import humanRequirements.rotationalLimits.RotationalLimits;
+import humanRequirements.rotationalLimits.particularRotationalLimits.CivilianRotationalLimits;
 
 //
 class RotatingHabitat {
