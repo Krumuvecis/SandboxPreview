@@ -14,6 +14,16 @@ public class Diet implements DietInterface {
     private double fatsEnergyRatio; //of total calories
     private @NotNull Map<@NotNull NutrientEnum, @NotNull Mass> nutrientsPerBodyMass; //per 1kg of body mass; daily values
 
+    //daily limits
+    // min
+    // max
+    //
+    // absolute
+    // per body mass
+    //
+    // by gender?
+    // by age?
+
     //for custom diets
     public Diet(double fatsEnergyRatio, @NotNull Map<@NotNull NutrientEnum, @NotNull Mass> nutrientsPerBodyMass) {
         this.fatsEnergyRatio = fatsEnergyRatio;
