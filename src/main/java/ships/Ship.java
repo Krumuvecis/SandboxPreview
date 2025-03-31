@@ -22,7 +22,11 @@ public class Ship {
 
     //
     public Mass getDryMass() {
-        return new Mass(propulsion.getMass().getInBase() + fuelTanks.getMass().getInBase() + accommodations.getMass().getInBase());
+        @NotNull Mass sum = new Mass(0);
+        sum.sum(propulsion.getMass());
+        sum.sum(fuelTanks.getMass());
+        sum.sum(accommodations.getMass());
+        return sum;
     }
 
     //

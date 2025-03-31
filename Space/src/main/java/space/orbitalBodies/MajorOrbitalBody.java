@@ -71,12 +71,12 @@ public class MajorOrbitalBody extends AbstractOrbitalBody {
         //  Rh = R * (w / 3)^(1/3)
 
         double childMassFraction = getChildMassFraction();
-        return new Distance(radius.getInBase() * getCubeRoot(childMassFraction / 3));
+        return radius.getMultiplied(getCubeRoot(childMassFraction / 3));
     }
 
     private double getChildMassFraction() throws NullParentException {
-        double childMass = mass.getInBase();
-        return childMass / (childMass + getParentMass().getInBase());
+        double childMassInBase = mass.getInBase();
+        return childMassInBase / (childMassInBase + getParentMass().getInBase());
     }
 
     private static double getCubeRoot(double number) {

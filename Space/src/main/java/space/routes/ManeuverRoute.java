@@ -76,16 +76,12 @@ public class ManeuverRoute {
 
     //in seconds, for total route
     public Time getTotalTransferTime() {
-        return new Time(getTotalTransferTime(getTotalRoute()));
-    }
-
-    //in seconds
-    private double getTotalTransferTime(List<HohmannRouteElement> route) {
-        double sum = 0;
+        List<HohmannRouteElement> route = getTotalRoute();
+        Time time = new Time(0);
         for (HohmannRouteElement element : route) {
-            sum += element.transferOrbit.getTransferTime(element.parent.getSpecificGravity()).getInBase();
+            time.sum(element.transferOrbit.getTransferTime(element.parent.getSpecificGravity()));
         }
-        return sum;
+        return time;
     }
 
     public static class HohmannRouteElement {
@@ -141,7 +137,7 @@ public class ManeuverRoute {
             Distance rp;
             if (body instanceof @NotNull MajorOrbitalBody major) {
                 Distance rp_h = major.getHillRadiusAtSemiMajorAis();
-                rp = new Distance(rp_0.getInBase() + rp_h.getInBase());
+                rp = rp_0.getSum(rp_h);
             } else {
                 rp = rp_0;
             }
@@ -189,7 +185,7 @@ public class ManeuverRoute {
             Distance rp;
             if (body instanceof @NotNull MajorOrbitalBody major) {
                 Distance rp_h = major.getHillRadiusAtSemiMajorAis();
-                rp = new Distance(rp_0.getInBase() + rp_h.getInBase());
+                rp = rp_0.getSum(rp_h);
             } else {
                 rp = rp_0;
             }
@@ -235,14 +231,14 @@ public class ManeuverRoute {
 
             boolean outwards;
             Distance rp, ra;
-            if (a1.getInBase() + rh1.getInBase() <= a2.getInBase() - rh2.getInBase()) {
+            if (a1.getInBase() + rh1.getInBase() <= a2.getInBase() - rh2.getInBase()) { // a1 + rh1 <= a2 - rh2
                 outwards = true;
-                rp = new Distance(a1.getInBase() + rh1.getInBase());
-                ra = new Distance(a2.getInBase() - rh2.getInBase());
-            } else if (a1.getInBase() - rh1.getInBase() >= a2.getInBase() + rh2.getInBase()) {
+                rp = a1.getSum(rh1); // a1 + rh1
+                ra = a2.getSum(rh2.getMultiplied(-1)); // a2 - rh2
+            } else if (a1.getInBase() - rh1.getInBase() >= a2.getInBase() + rh2.getInBase()) { // a1 - rh1 >= a2 + rh2
                 outwards = false;
-                rp = new Distance(a2.getInBase() + rh2.getInBase());
-                ra = new Distance(a1.getInBase() - rh1.getInBase());
+                rp = a2.getSum(rh2); // a2 + rh2
+                ra = a1.getSum(rh1.getMultiplied(-1)); // a1 - rh1
             } else {
                 throw new RuntimeException("Overlapping orbits not supported.");
             }

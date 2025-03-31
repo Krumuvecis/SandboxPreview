@@ -46,15 +46,16 @@ class SectionCellContainer implements MassivePart {
         }
     }
 
+    //
     @Override
     public @NotNull Mass getMass() {
-        final double @NotNull [] sum = new double[1]; //has to be a one-member array, to be accessible from action method
+        final @NotNull Mass sum = new Mass(0);
         iterate(new CellActionInterface() {
             @Override
             public void action(@NotNull HabitatSectionCell cell, int lengthIndex, int widthIndex) {
-                sum[0] += cell.getMass().getInBase();
+                sum.sum(cell.getMass());
             }
         });
-        return new Mass(sum[0]);
+        return sum;
     }
 }

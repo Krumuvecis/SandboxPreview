@@ -20,7 +20,7 @@ public class StructuralBeam implements MassivePart {
     }
 
     private @NotNull Mass calculateSelfMass(double selfMass_carryMass_ratio, double lengthwiseMassComponent) {
-        return new Mass(carryMass.getInBase() * selfMass_carryMass_ratio + length * lengthwiseMassComponent);
+        return carryMass.getMultiplied(selfMass_carryMass_ratio).getSum(new Mass(lengthwiseMassComponent).getMultiplied(length));
     }
 
     //in number of habitat cells

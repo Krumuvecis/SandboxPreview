@@ -42,8 +42,8 @@ public class PlanetaryParameters {
         // r_g / h  = (1/R^2 - 1/(R+h)^2) / (1/R^2) / h = (1 - (R / (R+h))^2) / h = (2*R*h + h^2) / (R+h))^2 / h
         // r_g / h = (2*R + h) / (R+h))^2
         double
-                referenceHeightSI = 1,
-                radiusSI = radius.getInBase();
-        return (2 * radiusSI + referenceHeightSI) / Math.pow(radiusSI + referenceHeightSI, 2);
+                referenceHeightInBase = 1,
+                radiusInBase = radius.getInBase();
+        return (2 * radiusInBase + referenceHeightInBase) / Math.pow(radiusInBase + referenceHeightInBase, 2);
     }
 }

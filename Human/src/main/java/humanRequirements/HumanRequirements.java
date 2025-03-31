@@ -12,7 +12,6 @@ import humanRequirements.rotationalLimits.particularRotationalLimits.CivilianRot
 import humanRequirements.rotationalLimits.particularRotationalLimits.MilitaryRotationalLimits;
 import humanRequirements.aerationRequirements.AerationRequirements;
 import humanRequirements.hydrationRequirements.HydrationRequirements;
-import humanRequirements.nutritionRequirements.NutritionRequirements;
 import humanRequirements.accommodationRequirements.AccommodationRequirements;
 import humanRequirements.sanitationRequirements.SanitationRequirements;
 
@@ -21,19 +20,19 @@ public class HumanRequirements implements HumanRequirementInterface {
     private final @NotNull RotationalLimits rotationalLimits;
     private final @NotNull AerationRequirements aerationRequirements;
     private final @NotNull HydrationRequirements hydrationRequirements;
-    private final @NotNull NutritionRequirements nutritionRequirements;
+    //private final @NotNull NutritionRequirements nutritionRequirements;
     private final @NotNull AccommodationRequirements accommodationRequirements;
     private final @NotNull SanitationRequirements sanitationRequirements;
 
     //
     public HumanRequirements(@NotNull RotationalLimits rotationalLimits,
-                             @NotNull Mass dailyWaterConsumption, @NotNull NutritionRequirements nutritionRequirements,
+                             @NotNull Mass dailyWaterConsumption, //@NotNull NutritionRequirements nutritionRequirements,
                              double privateAreaPerPerson, double commonAreaPerPerson,
                              @NotNull Mass luggagePerPerson, double showerRate) {
         this.rotationalLimits = rotationalLimits;
         aerationRequirements = new AerationRequirements();
         hydrationRequirements = new HydrationRequirements(dailyWaterConsumption);
-        this.nutritionRequirements = nutritionRequirements;
+        //this.nutritionRequirements = nutritionRequirements;
         accommodationRequirements = new AccommodationRequirements(privateAreaPerPerson, commonAreaPerPerson, luggagePerPerson);
         sanitationRequirements = new SanitationRequirements(showerRate);
     }
@@ -57,10 +56,10 @@ public class HumanRequirements implements HumanRequirementInterface {
     }
 
     //
-    @Override
+    /*@Override
     public @NotNull NutritionRequirements getNutritionRequirements() {
         return nutritionRequirements;
-    }
+    }*/
 
     //
     @Override
@@ -87,7 +86,7 @@ public class HumanRequirements implements HumanRequirementInterface {
         //
         public LuxuryRequirements() {
             super(REFERENCE_ROTATIONAL_LIMITS,
-                    REFERENCE_DAILY_WATER_CONSUMPTION, new NutritionRequirements.LuxuryNutritionRequirements(),
+                    REFERENCE_DAILY_WATER_CONSUMPTION,// new NutritionRequirements.LuxuryNutritionRequirements(),
                     REFERENCE_PRIVATE_AREA_PER_PERSON, REFERENCE_COMMON_AREA_PER_PERSON, REFERENCE_LUGGAGE_AMOUNT,
                     REFERENCE_SHOWER_RATE);
         }
@@ -106,7 +105,7 @@ public class HumanRequirements implements HumanRequirementInterface {
         //
         public CivilianRequirements() {
             super(REFERENCE_ROTATIONAL_LIMITS,
-                    REFERENCE_DAILY_WATER_CONSUMPTION, new NutritionRequirements.CivilianNutritionRequirements(),
+                    REFERENCE_DAILY_WATER_CONSUMPTION,// new NutritionRequirements.CivilianNutritionRequirements(),
                     REFERENCE_PRIVATE_AREA_PER_PERSON, REFERENCE_COMMON_AREA_PER_PERSON, REFERENCE_LUGGAGE_AMOUNT,
                     REFERENCE_SHOWER_RATE);
         }
@@ -125,7 +124,7 @@ public class HumanRequirements implements HumanRequirementInterface {
         //
         public MilitaryRequirements() {
             super(REFERENCE_ROTATIONAL_LIMITS,
-                    REFERENCE_DAILY_WATER_CONSUMPTION, new NutritionRequirements.MilitaryNutritionRequirements(),
+                    REFERENCE_DAILY_WATER_CONSUMPTION,// new NutritionRequirements.MilitaryNutritionRequirements(),
                     REFERENCE_PRIVATE_AREA_PER_PERSON, REFERENCE_COMMON_AREA_PER_PERSON, REFERENCE_LUGGAGE_AMOUNT,
                     REFERENCE_SHOWER_RATE);
         }

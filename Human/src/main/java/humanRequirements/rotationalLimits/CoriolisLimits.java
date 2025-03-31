@@ -1,6 +1,6 @@
 package humanRequirements.rotationalLimits;
 
-import mathUtils.RotationFormulae;
+import rotation.RotationFormulae;
 
 //
 public class CoriolisLimits implements RotationalLimitInterface {

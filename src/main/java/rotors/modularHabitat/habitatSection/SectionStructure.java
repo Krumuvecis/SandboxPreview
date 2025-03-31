@@ -23,7 +23,7 @@ public class SectionStructure implements MassivePart, Copyable<@NotNull SectionS
         this.width = rowCount;
         this.massPerCell = massPerCell;
         this.additionalMass = additionalMass;
-        totalMass = new Mass(massPerCell.getInBase() * getTotalCellCount() + additionalMass.getInBase());
+        totalMass = massPerCell.getMultiplied(getTotalCellCount()).getSum(additionalMass);
     }
 
     //

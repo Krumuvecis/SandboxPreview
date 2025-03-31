@@ -5,7 +5,6 @@ import org.jetbrains.annotations.NotNull;
 import humanRequirements.rotationalLimits.RotationalLimits;
 import humanRequirements.aerationRequirements.AerationRequirements;
 import humanRequirements.hydrationRequirements.HydrationRequirements;
-import humanRequirements.nutritionRequirements.NutritionRequirements;
 import humanRequirements.accommodationRequirements.AccommodationRequirements;
 import humanRequirements.sanitationRequirements.SanitationRequirements;
 import humanGroup.HumanGroup;
@@ -38,10 +37,10 @@ public class HumanGroupRequirements implements HumanRequirementInterface {
     }
 
     //
-    @Override
+    /*@Override
     public @NotNull NutritionRequirements getNutritionRequirements() {
         return null;
-    }
+    }*/
 
     //
     @Override

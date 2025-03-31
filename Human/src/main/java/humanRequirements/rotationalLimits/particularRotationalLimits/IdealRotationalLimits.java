@@ -3,7 +3,7 @@ package humanRequirements.rotationalLimits.particularRotationalLimits;
 import org.jetbrains.annotations.NotNull;
 
 import dimensions.time.Time;
-import mathUtils.RotationFormulae;
+import rotation.RotationFormulae;
 import space.orbitalBodies.particularMajors.earth.Earth;
 import humanRequirements.rotationalLimits.CoriolisLimits;
 import humanRequirements.rotationalLimits.RotationalLimits;

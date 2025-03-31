@@ -3,7 +3,7 @@ package basicParts.cables;
 import org.jetbrains.annotations.NotNull;
 
 import utils.Copyable;
-import mathUtils.RotationFormulae;
+import rotation.RotationFormulae;
 import dimensions.distance.Distance;
 import dimensions.mass.Mass;
 import basicParts.MassivePart;
@@ -28,7 +28,7 @@ public class Cable implements MassivePart, Copyable<@NotNull Cable> {
     }
 
     private static double calculateCrossSection(@NotNull Distance diameter) { //in m2
-        return RotationFormulae.getCircleArea(new Distance(diameter.getInBase() / 2));
+        return RotationFormulae.getCircleArea(diameter.getMultiplied(0.5));
     }
 
     private static double calculateMaxStrength(double maxStress, double crossSection) { //SI

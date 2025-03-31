@@ -4,8 +4,6 @@ import org.jetbrains.annotations.NotNull;
 
 import dimensions.mass.Mass;
 import dimensions.time.Time;
-import dimensions.time.TimeUnit;
-import rotors.RotatingHabitatSystem;
 
 //
 class ShipAccommodations implements MassiveShipPart {

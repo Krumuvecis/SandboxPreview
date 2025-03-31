@@ -29,29 +29,29 @@ public class SectionRigging implements MassivePart, Copyable<@NotNull SectionRig
 
     //
     public @NotNull Mass getCarryableMass(double acceleration) {
-        double sum = 0;
+        @NotNull Mass sum = new Mass(0);
         for (@Nullable Cable @NotNull [] pair : cablePairs) {
             for (@Nullable Cable cable : pair) {
                 if (cable != null) {
-                    sum += cable.getCarryableMass(acceleration).getInBase();
+                    sum.sum(cable.getCarryableMass(acceleration));
                 }
             }
         }
-        return new Mass(sum);
+        return sum;
     }
 
     //
     @Override
     public @NotNull Mass getMass() {
-        double sum = additionalRiggingMass.getInBase();
+        @NotNull Mass sum = additionalRiggingMass.copy();
         for (@Nullable Cable @NotNull [] pair : cablePairs) {
             for (@Nullable Cable cable : pair) {
                 if (cable != null) {
-                    sum += cable.getMass().getInBase();
+                    sum.sum(cable.getMass());
                 }
             }
         }
-        return new Mass(sum);
+        return sum;
     }
 
     //
