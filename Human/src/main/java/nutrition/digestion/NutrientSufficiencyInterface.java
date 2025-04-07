@@ -1,7 +1,9 @@
 package nutrition.digestion;
 
+import java.util.Objects;
+import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
-import java.util.EnumMap;
 import java.util.HashMap;
 
 import org.jetbrains.annotations.NotNull;
@@ -57,48 +59,74 @@ public interface NutrientSufficiencyInterface extends DailyNutritionalValueInter
     }
 
     //
-    default @NotNull SufficiencyAnalysis getNutrientSufficiency(@NotNull NutritionalValue nutritionalValue) {
-        double lowestSufficiency = Double.MAX_VALUE;
-        @Nullable NutrientInterface leastSufficientNutrient = null;
-        @NotNull Map<@NotNull MacroNutrient, @NotNull Double> macroSufficiencyMap = new EnumMap<>(MacroNutrient.class);
+    default @NotNull SufficiencyAnalysis getNutrientSufficiency(@NotNull NutritionalValue nutritionalValue,
+                                                                @Nullable Mass referenceMass) {
+        @NotNull Mass nonNullReferenceMass = Objects.requireNonNullElse(referenceMass, new Mass(1));
+        double
+                lowestSufficiency = Double.MAX_VALUE,
+                highestSufficiency = 0;
+        @Nullable NutrientInterface
+                leastSufficientNutrient = null,
+                mostSufficientNutrient = null;
+        @NotNull Map<NutrientInterface, Double> sufficiencyMap = new HashMap<>();
+
+        //check all macros
         for (@NotNull MacroNutrient nutrient : getDailyNutrients().getMacroNutrients().keySet()) {
             try {
                 double sufficiency = compareMacroNutrient(nutritionalValue, nutrient);
-                macroSufficiencyMap.put(nutrient, sufficiency);
+                sufficiencyMap.put(nutrient, sufficiency);
                 if (sufficiency < lowestSufficiency) {
                     lowestSufficiency = sufficiency;
                     leastSufficientNutrient = nutrient;
                 }
+                if (sufficiency > highestSufficiency) {
+                    highestSufficiency = sufficiency;
+                    mostSufficientNutrient = nutrient;
+                }
             } catch (@NotNull NutrientNotNeededException ignored) {}
         }
-        @NotNull Map<@NotNull MicroNutrient, @NotNull Double> microSufficiencyMap = new EnumMap<>(MicroNutrient.class);
+
+        //check all micros
         for (@NotNull MicroNutrient nutrient : getDailyNutrients().getMicroNutrients().keySet()) {
             try {
                 double sufficiency = compareMicroNutrient(nutritionalValue, nutrient);
-                microSufficiencyMap.put(nutrient, sufficiency);
+                sufficiencyMap.put(nutrient, sufficiency);
                 if (sufficiency < lowestSufficiency) {
                     lowestSufficiency = sufficiency;
                     leastSufficientNutrient = nutrient;
                 }
+                if (sufficiency > highestSufficiency) {
+                    highestSufficiency = sufficiency;
+                    mostSufficientNutrient = nutrient;
+                }
             } catch (@NotNull NutrientNotNeededException ignored) {}
         }
-        @NotNull Map<NutrientInterface, Double> sufficiencyMap = new HashMap<>() {{
-            putAll(macroSufficiencyMap);
-            putAll(microSufficiencyMap);
-        }};
-        return new SufficiencyAnalysis(sufficiencyMap, leastSufficientNutrient);
+
+        return new SufficiencyAnalysis(nutritionalValue, nonNullReferenceMass,
+                sufficiencyMap, leastSufficientNutrient, mostSufficientNutrient);
     }
 
     //
     final class SufficiencyAnalysis {
+        private final @NotNull NutritionalValue nutritionalValue;
+        private final @NotNull Mass referenceMass;
         private final @NotNull Map<@NotNull NutrientInterface, @NotNull Double> sufficiencyMap;
-        private final @Nullable NutrientInterface leastSufficientNutrient;
+        private final @Nullable NutrientInterface
+                leastSufficientNutrient,
+                mostSufficientNutrient;
+        private @Nullable List<@NotNull SingleNutrientSufficiencyData> sortedSufficiencies;
 
         //
-        SufficiencyAnalysis(@NotNull Map<@NotNull NutrientInterface, @NotNull Double> sufficiencyMap,
-                            @Nullable NutrientInterface leastSufficientNutrient) {
+        SufficiencyAnalysis(@NotNull NutritionalValue nutritionalValue, @NotNull Mass referenceMass,
+                            @NotNull Map<@NotNull NutrientInterface, @NotNull Double> sufficiencyMap,
+                            @Nullable NutrientInterface leastSufficientNutrient,
+                            @Nullable NutrientInterface mostSufficientNutrient) {
+            this.nutritionalValue = nutritionalValue;
+            this.referenceMass = referenceMass;
             this.sufficiencyMap = sufficiencyMap;
             this.leastSufficientNutrient = leastSufficientNutrient;
+            this.mostSufficientNutrient = mostSufficientNutrient;
+            sortedSufficiencies = null;
         }
 
         //
@@ -112,17 +140,102 @@ public interface NutrientSufficiencyInterface extends DailyNutritionalValueInter
         }
 
         //
+        public @Nullable NutrientInterface getMostSufficientNutrient() {
+            return mostSufficientNutrient;
+        }
+
+        //
         public double getLowestSufficiency() throws NullPointerException {
             return sufficiencyMap.get(leastSufficientNutrient);
         }
 
         //
+        public double getHighestSufficiency() throws NullPointerException {
+            return sufficiencyMap.get(mostSufficientNutrient);
+        }
+
+        //
         public @Nullable Mass getMinimumMass() {
-            @Nullable Mass mass = null;
             try {
-                mass = new Mass(1 / getLowestSufficiency());
+                return getDividedReferenceMass(getLowestSufficiency());
             } catch (@NotNull NullPointerException ignored) {}
+            return null;
+        }
+
+        //
+        public @Nullable Mass getMaximumMass() {
+            try {
+                return getDividedReferenceMass(getHighestSufficiency());
+            } catch (@NotNull NullPointerException ignored) {}
+            return null;
+        }
+
+        private @NotNull Mass getDividedReferenceMass(double divisor) {
+            return referenceMass.getMultiplied(1 / divisor);
+        }
+
+        //
+        public @NotNull List<@NotNull SingleNutrientSufficiencyData> getSortedSufficiencies() {
+            if (sortedSufficiencies == null) {
+                sortSufficiencies();
+            }
+            return sortedSufficiencies;
+        }
+
+        private void sortSufficiencies() {
+            @NotNull List<@NotNull NutrientInterface> unsortedNutrients = new ArrayList<>() {{
+                addAll(sufficiencyMap.keySet());
+            }};
+            sortedSufficiencies = new ArrayList<>();
+            while (!unsortedNutrients.isEmpty()) {
+                double highestSufficiency = 0;
+                @Nullable NutrientInterface mostSufficientNutrient = null;
+                for (@NotNull NutrientInterface nutrient : unsortedNutrients) {
+                    double sufficiency = sufficiencyMap.get(nutrient);
+                    if (sufficiency >= highestSufficiency) {
+                        highestSufficiency = sufficiency;
+                        mostSufficientNutrient = nutrient;
+                    }
+                }
+                if (mostSufficientNutrient == null) {
+                    throw new RuntimeException("Could not find the most sufficient nutrient, unable to sort sufficiencies.");
+                } else {
+                    sortedSufficiencies.add(new SingleNutrientSufficiencyData(
+                            mostSufficientNutrient,
+                            nutritionalValue.getAnyNutrient(mostSufficientNutrient),
+                            highestSufficiency));
+                    unsortedNutrients.remove(mostSufficientNutrient);
+                }
+            }
+        }
+    }
+
+    //
+    final class SingleNutrientSufficiencyData {
+        private final @NotNull NutrientInterface nutrient;
+        private final @Nullable Mass mass;
+        private final double sufficiency;
+
+        //
+        SingleNutrientSufficiencyData(@NotNull NutrientInterface nutrient, @Nullable Mass mass, double sufficiency) {
+            this.nutrient = nutrient;
+            this.mass = mass;
+            this.sufficiency = sufficiency;
+        }
+
+        //
+        public @NotNull NutrientInterface getNutrient() {
+            return nutrient;
+        }
+
+        //
+        public @Nullable Mass getMass() {
             return mass;
+        }
+
+        //
+        public double getSufficiency() {
+            return sufficiency;
         }
     }
 

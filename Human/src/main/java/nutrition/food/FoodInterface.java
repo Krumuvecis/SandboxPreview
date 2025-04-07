@@ -1,7 +1,6 @@
 package nutrition.food;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import dimensions.mass.Mass;
 import nutrition.nutrients.NutritionalValue;
@@ -11,14 +10,11 @@ public interface FoodInterface {
     //
     @NotNull String getName();
 
-    //for discrete foods; null - divisible
-    @Nullable Mass getUnitMass();
+    //per 1kg
+    @NotNull NutritionalValue getBaseNutritionalValue();
 
-    //base, per 1kg
-    @NotNull NutritionalValue getNutritionalValue();
-
-    //scaled per mass
+    //base nutrients multiplied by some mass
     default @NotNull NutritionalValue getNutritionalValue(@NotNull Mass mass) {
-        return getNutritionalValue().getMultiplied(mass.getInBase());
+        return getBaseNutritionalValue().getMultiplied(mass.getInBase());
     }
 }

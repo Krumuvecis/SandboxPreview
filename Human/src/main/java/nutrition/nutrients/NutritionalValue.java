@@ -68,6 +68,11 @@ public class NutritionalValue implements NutritionalValueInterface<@NotNull Nutr
         this(proteinGramsPer100g, fatsGramsPer100g, carbsGramsPer100g, null);
     }
 
+    //no nutrients, empty value
+    public NutritionalValue() {
+        this(null, null, null);
+    }
+
     private static @NotNull Mass convert_gramsPer100g_to_kgPerKg(double gramsPer100g) {
         return new Mass(gramsPer100g / new Mass(100, MassUnit.G).getInBase(), MassUnit.G);
     }
@@ -87,6 +92,26 @@ public class NutritionalValue implements NutritionalValueInterface<@NotNull Nutr
     //
     @Override
     public final @NotNull NutritionalValue copy() {
-        return new NutritionalValue(getMacroNutrients(), getMicroNutrients());
+        return new NutritionalValue(
+                new EnumMap<>(MacroNutrient.class) {{
+                    for (@NotNull MacroNutrient nutrient : macroNutrients.keySet()) {
+                        @Nullable Mass mass = macroNutrients.get(nutrient);
+                        if (mass == null) {
+                            put(nutrient, null);
+                        } else {
+                            put(nutrient, mass.copy());
+                        }
+                    }
+                }},
+                new EnumMap<>(MicroNutrient.class) {{
+                    for (@NotNull MicroNutrient nutrient : microNutrients.keySet()) {
+                        @Nullable Mass mass = microNutrients.get(nutrient);
+                        if (mass == null) {
+                            put(nutrient, null);
+                        } else {
+                            put(nutrient, mass.copy());
+                        }
+                    }
+                }});
     }
 }

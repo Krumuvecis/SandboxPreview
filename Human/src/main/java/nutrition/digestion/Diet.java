@@ -10,7 +10,7 @@ import dimensions.mass.MassUnit;
 import dimensions.mass.Mass;
 import nutrition.nutrients.MicroNutrient;
 
-//
+//TODO: finish arithmetics, add docs
 public class Diet implements DietInterface {
     public static final @NotNull EnumMap<@NotNull MicroNutrient, @Nullable Mass>
             STANDARD_MICRONUTRIENTS = new StandardMicronutrients();
@@ -93,15 +93,21 @@ public class Diet implements DietInterface {
     //
     @Override
     public void sum(@NotNull DietInterface addend) {
-        //TODO: finish this
-        throw new RuntimeException("not done!");
+        //TODO: finish this:
+        // * micronutrient addition straightforward
+        // * what about proteins per body mass? should somehow get a weighted average, but diets don't have weights
+        // * what about fats ratio? should somehow get a weighted average, but diets don't have weights
+        throw new RuntimeException("Diet addition not supported yet!");
     }
 
     //
     @Override
     public void multiply(double multiplier) {
-        //TODO: finish this
-        throw new RuntimeException("not done!");
+        //TODO: finish this:
+        // * micronutrient addition straightforward
+        // * proteins per body mass straightforward as well
+        // * what about fats ratio? could leave unchanged, since multiplier is a number
+        throw new RuntimeException("Diet multiplication not supported yet!");
     }
 
     private static final class StandardMicronutrients extends EnumMap<@NotNull MicroNutrient, @Nullable Mass> {

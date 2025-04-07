@@ -1,4 +1,4 @@
-package nutrition.food;
+package nutrition.food.oldModel;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -46,7 +46,7 @@ public interface FoodMixInterface {
     }
 
     //
-    default @NotNull NutritionalValue getNutritionalValue() {
+    /*default @NotNull NutritionalValue getNutritionalValue() {
         @NotNull Map<@NotNull FoodMixConstituent, @NotNull Double> foodRatios = getFoodRatios();
         return new NutritionalValue(
                 new EnumMap<>(MacroNutrient.class) {{
@@ -73,7 +73,7 @@ public interface FoodMixInterface {
                     }
                 }}
         );
-    }
+    }*/
 
     //
     default @NotNull List<FoodMixConstituent> getSortedConstituents() {

@@ -1,4 +1,4 @@
-package nutrition.food;
+package nutrition.food.oldModel;
 
 import java.util.List;
 import java.util.Map;
@@ -11,7 +11,7 @@ import dimensions.mass.Mass;
 import nutrition.nutrients.NutrientInterface;
 import nutrition.digestion.NutrientSufficiencyInterface;
 import nutrition.digestion.DigestiveHumanInterface;
-import static nutrition.food.FoodMixConstituentTemplate.*;
+import static nutrition.food.oldModel.FoodMixConstituentTemplate.*;
 
 //
 public class AbstractFoodMix implements FoodMixInterface {
@@ -51,7 +51,7 @@ public class AbstractFoodMix implements FoodMixInterface {
         }
     }
 
-    public static class AutoFoodMix extends AbstractFoodMix {
+    /*public static class AutoFoodMix extends AbstractFoodMix {
         private final @NotNull DigestiveHumanInterface human;
 
         //
@@ -133,5 +133,5 @@ public class AbstractFoodMix implements FoodMixInterface {
             }
             return mostEfficientFood;
         }
-    }
+    }*/
 }

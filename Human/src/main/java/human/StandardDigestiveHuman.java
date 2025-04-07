@@ -41,10 +41,10 @@ public class StandardDigestiveHuman implements DigestiveHumanInterface {
 
     //
     public static final class StandardHuman_luxury extends StandardDigestiveHuman {
-        private static final @NotNull Mass REFERENCE_PERSON_MASS = new Mass(200);
+        private static final @NotNull Mass REFERENCE_PERSON_MASS = new Mass(150);
         private static final double DAILY_CALORIES = 3000;
         private static final @NotNull Diet REFERENCE_DIET = Diet.LUXURY_DIET;
-        private static final @NotNull Mass MAXIMUM_DAILY_FOOD_THROUGHPUT = new Mass(2);
+        private static final @NotNull Mass MAXIMUM_DAILY_FOOD_THROUGHPUT = new Mass(3);
 
         //
         public StandardHuman_luxury() {
@@ -54,10 +54,10 @@ public class StandardDigestiveHuman implements DigestiveHumanInterface {
 
     //
     public static final class StandardHuman_civilian extends StandardDigestiveHuman {
-        private static final @NotNull Mass REFERENCE_PERSON_MASS = new Mass(100);
+        private static final @NotNull Mass REFERENCE_PERSON_MASS = new Mass(80);
         private static final double DAILY_CALORIES = 2200;
         private static final @NotNull Diet REFERENCE_DIET = Diet.CIVILIAN_DIET;
-        private static final @NotNull Mass MAXIMUM_DAILY_FOOD_THROUGHPUT = new Mass(3);
+        private static final @NotNull Mass MAXIMUM_DAILY_FOOD_THROUGHPUT = new Mass(2);
 
         //
         public StandardHuman_civilian() {
@@ -67,8 +67,8 @@ public class StandardDigestiveHuman implements DigestiveHumanInterface {
 
     //
     public static final class StandardHuman_military extends StandardDigestiveHuman {
-        private static final @NotNull Mass REFERENCE_PERSON_MASS = new Mass(70);
-        private static final double DAILY_CALORIES = 5000;
+        private static final @NotNull Mass REFERENCE_PERSON_MASS = new Mass(80);
+        private static final double DAILY_CALORIES = 4000;
         private static final @NotNull Diet REFERENCE_DIET = Diet.MILITARY_DIET;
         private static final @NotNull Mass MAXIMUM_DAILY_FOOD_THROUGHPUT = new Mass(3);
 

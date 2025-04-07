@@ -1,4 +1,4 @@
-package nutrition.food;
+package nutrition.food.oldModel;
 
 import org.jetbrains.annotations.NotNull;
 

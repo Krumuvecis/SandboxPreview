@@ -1,4 +1,4 @@
-package nutritionTests;
+package nutritionTests.oldModel;
 
 import java.util.ArrayList;
 
@@ -7,15 +7,14 @@ import org.jetbrains.annotations.NotNull;
 import dimensions.mass.MassUnit;
 import dimensions.mass.Mass;
 import nutrition.digestion.DigestiveHumanInterface;
-import static nutrition.food.ParticularFoods.*;
-import nutrition.food.AbstractFoodMix;
-import static nutrition.food.FoodMixConstituentTemplate.*;
+import nutrition.food.oldModel.AbstractFoodMix;
+import static nutrition.food.oldModel.FoodMixConstituentTemplate.*;
 
 //
-final class TestFoodMix_auto extends AbstractFoodMix.AutoFoodMix {
+final class TestFoodMix_auto /*extends AbstractFoodMix.AutoFoodMix*/ {
     //
     TestFoodMix_auto(@NotNull DigestiveHumanInterface human) {
-        super(human, new ArrayList<>() {{
+        /*super(human, new ArrayList<>() {{
             //breakfast
             add(new FoodMixConstituentTemplate_limitedByMass(OATS, new Mass(500.0 / 7, MassUnit.G)));
             add(new FoodMixConstituentTemplate_limitedByMass(SUGAR, new Mass(1.0 * 3 / 7, MassUnit.TABLESPOON)));
@@ -49,6 +48,6 @@ final class TestFoodMix_auto extends AbstractFoodMix.AutoFoodMix {
             add(new FoodMixConstituentTemplate_limitedByMass(CONDENSED_MILK, new Mass(2, MassUnit.TABLESPOON)));
             add(new FoodMixConstituentTemplate_limitedByMass(HONEY, new Mass(3, MassUnit.TEASPOON)));
             add(new FoodMixConstituentTemplate_limitedByMass(ENERGY_DRINK_MONSTER, new Mass(500.0, MassUnit.G)));
-        }});
+        }});*/
     }
 }

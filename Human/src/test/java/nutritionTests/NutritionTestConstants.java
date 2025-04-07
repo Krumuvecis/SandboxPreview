@@ -16,6 +16,7 @@ import nutrition.nutrients.MicroNutrient;
 import nutrition.nutrients.NutritionalValue;
 
 //
+@SuppressWarnings("SameParameterValue")
 class NutritionTestConstants {
     //
     private static final @NotNull String INDENT = "  ";
@@ -31,7 +32,6 @@ class NutritionTestConstants {
     }
 
     //
-    @SuppressWarnings("SameParameterValue")
     static void printNutritionalValue_all(@NotNull NutritionalValue nutritionalValue, boolean displayNull, int indent,
                                           @NotNull MassUnit macrosDisplayUnit, int macrosDecimalPlaces,
                                           @NotNull MassUnit microsDisplayUnit, int microsDecimalPlaces) {
@@ -40,7 +40,6 @@ class NutritionTestConstants {
     }
 
     //
-    @SuppressWarnings("SameParameterValue")
     static void printNutritionalValue_macros(@NotNull NutritionalValue nutritionalValue, boolean displayNull,
                                              int indent, @NotNull MassUnit displayUnit, int decimalPlaces) {
         @NotNull Map<@NotNull MacroNutrient, @Nullable Mass> nutrients = nutritionalValue.getMacroNutrients();
@@ -54,7 +53,6 @@ class NutritionTestConstants {
     }
 
     //
-    @SuppressWarnings("SameParameterValue")
     static void printNutritionalValue_micros(@NotNull NutritionalValue nutritionalValue, boolean displayNull,
                                              int indent, @NotNull MassUnit displayUnit, int decimalPlaces) {
         @NotNull Map<@NotNull NutrientInterface, @Nullable Mass> nutrients = nutritionalValue.getAllNutrients();

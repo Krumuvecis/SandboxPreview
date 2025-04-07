@@ -1,4 +1,4 @@
-package nutrition.food;
+package nutrition.food.oldModel;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -6,7 +6,7 @@ import dimensions.mass.Mass;
 
 //
 public class FoodMixConstituentTemplate {
-    private final @NotNull SimpleFood food;
+    /*private final @NotNull SimpleFood food;
 
     //
     FoodMixConstituentTemplate(@NotNull SimpleFood food) {
@@ -48,5 +48,5 @@ public class FoodMixConstituentTemplate {
         public @NotNull Mass getMaximumMass() {
             return maximumMass;
         }
-    }
+    }*/
 }

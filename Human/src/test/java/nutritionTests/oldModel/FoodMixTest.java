@@ -1,7 +1,11 @@
-package nutritionTests;
+package nutritionTests.oldModel;
 
 import java.util.Map;
-
+/*
+import nutrition.food.oldModel.FoodMixConstituent;
+import nutrition.food.oldModel.FoodMixInterface;
+import nutritionTests.AbstractNutritionTest;
+import nutritionTests.TestHuman;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -12,16 +16,15 @@ import dimensions.mass.Mass;
 import nutrition.nutrients.NutrientInterface;
 import nutrition.nutrients.NutritionalValue;
 import nutrition.digestion.DigestiveHumanInterface;
-import nutrition.food.*;
 
 import static nutritionTests.NutritionTestConstants.*;
-import static nutritionTests.NutritionTestConstants.printIndentedLine;
+import static nutritionTests.NutritionTestConstants.printIndentedLine;*/
 
 //
-public class FoodMixTest extends AbstractNutritionTest {
+public class FoodMixTest /*extends AbstractNutritionTest*/ {
 
     //
-    public static void main(String[] args) {
+    /*public static void main(String[] args) {
         printLine("Food mix test.");
         printLine(null);
         @NotNull DigestiveHumanInterface human = new TestHuman();
@@ -94,5 +97,5 @@ public class FoodMixTest extends AbstractNutritionTest {
             printIndentedLine(indent + 1, nutrient.getName() + ": " +
                     getRoundedPercentageString(nutrientSufficiencyMap.get(nutrient), 1));
         }
-    }
+    }*/
 }
