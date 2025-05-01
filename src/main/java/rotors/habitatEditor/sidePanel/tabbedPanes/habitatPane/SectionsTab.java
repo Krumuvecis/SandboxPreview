@@ -3,7 +3,7 @@ package rotors.habitatEditor.sidePanel.tabbedPanes.habitatPane;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.*;
+import javax.swing.JLabel;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -14,7 +14,6 @@ import rotors.habitatEditor.window.UserData.HabitatTabData;
 import rotors.habitatEditor.window.UserData.SectionsTabData;
 import rotors.habitatEditor.sidePanel.LabeledDropdown;
 import rotors.habitatEditor.sidePanel.LabeledDropdown.AbstractComboBox;
-import utils.DropdownableInterface;
 
 //TODO: finish this
 @SuppressWarnings("MissingJavadoc")
@@ -23,7 +22,7 @@ final class SectionsTab extends HabitatTabSubtab {
     SectionsTab(@NotNull Color backgroundColor, @NotNull SectionsTabData tabData,
                 @NotNull HabitatTabData habitatTabData) {
         super(backgroundColor);
-        add(new RotorSelector(backgroundColor, Color.white, "Section info: ", habitatTabData));
+        add(new InfoDisplayAmountSelector(backgroundColor, Color.white, "Section info: ", habitatTabData));
     }
 
     //
@@ -32,11 +31,11 @@ final class SectionsTab extends HabitatTabSubtab {
         return HabitatTabEnum.SECTIONS;
     }
 
-    private static final class RotorSelector extends LabeledDropdown<
+    private static final class InfoDisplayAmountSelector extends LabeledDropdown<
             @NotNull InfoDisplayAmount, @NotNull DropdownData<@NotNull InfoDisplayAmount>, @NotNull ComboBox> {
         //
-        RotorSelector(@NotNull Color backgroundColor, @NotNull Color textColor, @NotNull String text,
-                      @NotNull HabitatTabData habitatTabData) {
+        InfoDisplayAmountSelector(@NotNull Color backgroundColor, @NotNull Color textColor, @NotNull String text,
+                                  @NotNull HabitatTabData habitatTabData) {
             super(backgroundColor, textColor, text,
                     habitatTabData.getSectionInfoDisplayAmount(),
                     habitatTabData.getSectionInfoDisplayAmount().getDefaultValue());

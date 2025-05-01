@@ -14,7 +14,7 @@ import rotors.habitatEditor.sidePanel.LabeledDropdown.AbstractComboBox;
 //TODO: finish this
 @SuppressWarnings("MissingJavadoc")
 public abstract class LabeledDropdown<
-            T extends @NotNull DropdownableInterface, U extends @NotNull DropdownData<T>,
+            T extends @NotNull DropdownableInterface<T>, U extends @NotNull DropdownData<T>,
             V extends @NotNull AbstractComboBox<T, U>>
         extends JPanel {
     //
@@ -34,7 +34,7 @@ public abstract class LabeledDropdown<
 
     //
     public static abstract class AbstractComboBox<
-                T extends @NotNull DropdownableInterface, U extends @NotNull DropdownData<T>>
+                T extends @NotNull DropdownableInterface<T>, U extends @NotNull DropdownData<T>>
             extends JComboBox<T> {
         //
         public AbstractComboBox(U data, T defaultValue) {

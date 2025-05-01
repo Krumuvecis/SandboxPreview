@@ -6,8 +6,8 @@ import javax.swing.JFrame;
 
 import org.jetbrains.annotations.NotNull;
 
-import rotors.modularHabitat.HabitatSectionCell;
-import rotors.modularHabitat.ModularHabitat;
+import rotors.rotatingHabitat.modularHabitat.HabitatSectionCell;
+import rotors.rotatingHabitat.modularHabitat.ModularHabitat;
 import rotors.habitatEditor.sidePanel.SidePanel;
 import rotors.habitatEditor.mainPanel.MainPanel;
 

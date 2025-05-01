@@ -58,7 +58,7 @@ final class RotorsTab extends HabitatSystemSubtab {
         }
     }
 
-    private enum RotorEnum implements DropdownableInterface {
+    private enum RotorEnum implements DropdownableInterface<@NotNull RotorEnum> {
         ROTOR_1("Rotor 1"),
         ROTOR_2("Rotor 2");
 

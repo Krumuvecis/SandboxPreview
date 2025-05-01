@@ -7,7 +7,7 @@ import javax.swing.JPanel;
 
 import org.jetbrains.annotations.NotNull;
 
-import rotors.modularHabitat.ModularHabitat;
+import rotors.rotatingHabitat.modularHabitat.ModularHabitat;
 import rotors.habitatEditor.window.UserData;
 import rotors.habitatEditor.window.ObserverData;
 import rotors.habitatEditor.window.KeyboardChecker;

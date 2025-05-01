@@ -9,9 +9,9 @@ import java.awt.Graphics;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import rotors.modularHabitat.habitatSection.HabitatSection;
+import rotors.rotatingHabitat.modularHabitat.habitatSection.HabitatSection;
 import rotors.habitatEditor.window.UserData;
-import rotors.modularHabitat.habitatSection.SectionRigging;
+import rotors.rotatingHabitat.modularHabitat.habitatSection.SectionRigging;
 
 //
 public interface SectionInfoPainter {

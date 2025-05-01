@@ -5,10 +5,10 @@ import java.util.Objects;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import rotors.modularHabitat.HabitatModule;
-import rotors.modularHabitat.HabitatSectionCell;
-import rotors.modularHabitat.habitatSection.HabitatSection;
-import rotors.modularHabitat.particularModules.SampleModule_medium;
+import rotors.rotatingHabitat.modularHabitat.HabitatModule;
+import rotors.rotatingHabitat.modularHabitat.HabitatSectionCell;
+import rotors.rotatingHabitat.modularHabitat.habitatSection.HabitatSection;
+import rotors.rotatingHabitat.modularHabitat.particularModules.SampleModule_medium;
 import utils.DropdownData;
 import utils.DropdownableInterface;
 
@@ -28,7 +28,7 @@ public final class UserData {
 
     //
     @SuppressWarnings("MissingJavadoc")
-    public enum InfoDisplayAmount implements DropdownableInterface {
+    public enum InfoDisplayAmount implements DropdownableInterface<@NotNull InfoDisplayAmount> {
         NONE("None"),
         MINIMAL("Minimal"),
         NORMAL("Normal"),
@@ -48,7 +48,7 @@ public final class UserData {
 
         //
         @Override
-        public @NotNull DropdownableInterface @NotNull [] getAll() {
+        public @NotNull InfoDisplayAmount @NotNull [] getAll() {
             return InfoDisplayAmount.values();
         }
     }

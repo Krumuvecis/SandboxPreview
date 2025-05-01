@@ -3,7 +3,7 @@ package rotors.habitatEditor;
 import org.jetbrains.annotations.NotNull;
 
 import rotors.habitatEditor.window.Window;
-import rotors.modularHabitat.ModularHabitat;
+import rotors.rotatingHabitat.modularHabitat.ModularHabitat;
 
 //
 public final class HabitatEditor {

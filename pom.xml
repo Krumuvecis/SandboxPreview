@@ -23,6 +23,7 @@
         <module>Space</module>
         <module>Human</module>
 
+        <module>SpaceProgram</module>
         <module>TestLife</module>
     </modules>
 

@@ -27,11 +27,12 @@ public final class HabitatSystemTabbedPane extends AbstractTabbedPane<
 
     //
     @Override
-    public void addTabs(@NotNull Dimension paneSize, @NotNull Color backgroundColor, @NotNull HabitatSystemTabData tabData) {
+    public void addTabs(@NotNull Dimension paneSize, @NotNull Color backgroundColor,
+                        @NotNull HabitatSystemTabData tabData) {
         @NotNull Component
                 overallTab = new HabitatSystemTab_overall(backgroundColor, tabData.getOverallTabData()),
                 rotorsTab = new RotorsTab(paneSize, backgroundColor, tabData.getRotorsTabData()),
-                miscellaneousTab = new HabitatSystemTab_miscellaneous(backgroundColor, tabData.getMiscellaneousTabData());
+                miscellaneousTab = new HabitatSystemTab_miscellaneous(backgroundColor, Color.white, tabData.getMiscellaneousTabData());
         addTab("Overall", overallTab);
         addTab("Rotors", rotorsTab);
         addTab("Miscellaneous", miscellaneousTab);

@@ -20,6 +20,7 @@ import dimensions.DimensionalValue;
 @SuppressWarnings("MissingJavadoc")
 public abstract class ConversionManager<T extends @NotNull Enum<T> & DimensionalUnit> {
     private static final @NotNull String INDENT = "  "; //for debugging
+    private static final boolean PRINT_INITIALIZATION_TO_CONSOLE = false;
     private final @NotNull DimensionName dimensionName;
     private final T baseUnit;
     private final @NotNull Map<T, ? extends @NotNull Map<T, @NotNull Double>> directConversionRatios;
@@ -28,7 +29,7 @@ public abstract class ConversionManager<T extends @NotNull Enum<T> & Dimensional
     public ConversionManager(@NotNull DimensionName dimensionName, T baseUnit) {
         this.dimensionName = dimensionName;
         this.baseUnit = baseUnit;
-        directConversionRatios = initializeConversionRatios(getRatioTemplates());
+        directConversionRatios = initializeConversionRatios(getRatioTemplates(), PRINT_INITIALIZATION_TO_CONSOLE);
     }
 
     //
@@ -39,54 +40,57 @@ public abstract class ConversionManager<T extends @NotNull Enum<T> & Dimensional
     //
     public abstract @NotNull List<@NotNull ConversionRatioTemplate<T>> getRatioTemplates();
 
+    @SuppressWarnings("SameParameterValue")
     private @NotNull Map<T, ? extends @NotNull Map<T, @NotNull Double>> initializeConversionRatios(
-            @NotNull List<@NotNull ConversionRatioTemplate<T>> templateList) {
-        printLine("Initializing " + dimensionName.getNameLowercase() + " conversion ratios.");
+            @NotNull List<@NotNull ConversionRatioTemplate<T>> templateList, boolean printToConsole) {
+        printIndentedLineIf(0, printToConsole,
+                "Initializing " + dimensionName.getNameLowercase() + " conversion ratios.");
 
         //adds the base unit
-        printLine(INDENT + "Adding base unit: " + baseUnit.getShortName());
+        printIndentedLineIf(1, printToConsole, "Adding base unit: " + baseUnit.getShortName());
         @NotNull Map<T, @NotNull Map<T, @NotNull Double>> ratioMap = new EnumMap<>(baseUnit.getDeclaringClass()) {{
             put(baseUnit, new EnumMap<>(baseUnit.getDeclaringClass()));
         }};
 
         while (!templateList.isEmpty()) {
             int templateCount = templateList.size();
-            processTemplates(ratioMap, templateList);
-            printLine(INDENT);
-
+            processTemplates(ratioMap, templateList, printToConsole, 1);
             if (templateCount == templateList.size()) { //template list unchanged during the last iteration
-                throw new RuntimeException(
-                        dimensionName.getNameUppercase() + " conversion ratio initialization exception." +
-                                " Unable to add " + templateCount + " ratios.");
+                throw new RuntimeException(new ConversionRatiosInitializationException(dimensionName,
+                        "Unable to add " + templateCount + " ratios."));
             }
         }
-
-        printLine(dimensionName.getNameUppercase() + " conversion ratio initialization complete.");
-        printLine("");
+        printIndentedLineIf(0, printToConsole,
+                dimensionName.getNameUppercase() + " conversion ratio initialization complete.");
+        printIndentedLineIf(0, printToConsole, null);
         return Collections.unmodifiableMap(ratioMap);
     }
 
+    @SuppressWarnings("SameParameterValue")
     private void processTemplates(@NotNull Map <T, @NotNull Map<T, Double>> ratioMap,
-                                  @NotNull List<@NotNull ConversionRatioTemplate<T>> templateList) {
-        printLine(INDENT + "Sorting " + templateList.size() + " templates:");
+                                  @NotNull List<@NotNull ConversionRatioTemplate<T>> templateList,
+                                  boolean printToConsole, int indent) {
+        printIndentedLineIf(indent, printToConsole, "Sorting " + templateList.size() + " templates:");
         for (int i = 0; i < templateList.size(); i++) { // 1-level-for, checking all templates
             @NotNull ConversionRatioTemplate<T> template = templateList.get(i);
-            if (processTemplate(ratioMap, template)) {
-                printLine(INDENT.repeat(3) + "Template processed successfully.");
+            if (processTemplate(ratioMap, template, printToConsole, indent + 1)) {
+                printIndentedLineIf(indent + 2, printToConsole, "Template processed successfully.");
                 templateList.remove(i);
                 i--;
             } else {
-                printLine(INDENT.repeat(3) + "Template not processed.");
+                printIndentedLineIf(indent + 2, printToConsole, "Template not processed.");
             }
         }
+        printIndentedLineIf(indent, printToConsole, null);
     }
 
     @SuppressWarnings("RedundantCast")
     private boolean processTemplate(@NotNull Map<T, @NotNull Map<T, Double>> ratioMap,
-                                    @NotNull ConversionRatioTemplate<? extends T> template) {
+                                    @NotNull ConversionRatioTemplate<? extends T> template,
+                                    boolean printToConsole, int indent) {
         T startUnit = (T) template.getFrom();
         T targetUnit = (T) template.getTo();
-        printLine(INDENT.repeat(2) + "Conversion template: " +
+        printIndentedLineIf(indent, printToConsole, "Conversion template: " +
                 startUnit.getShortName() + " - " + targetUnit.getShortName() + ", ratio: " + template.getRatio());
 
         @NotNull Set<T> alreadyDefinedUnits = ratioMap.keySet();
@@ -95,43 +99,49 @@ public abstract class ConversionManager<T extends @NotNull Enum<T> & Dimensional
                 targetAlreadyDefined = alreadyDefinedUnits.contains(targetUnit);
 
         if (startAlreadyDefined && targetAlreadyDefined) {
-            printLine(INDENT.repeat(3) + "Both start and target already defined. Refusing to overwrite.");
-            return false;
-            //TODO: exception - conversion already defined
+            throw new RuntimeException(new ConversionRatiosInitializationException(dimensionName,
+                    "Both start and target already defined - refusing to overwrite."));
         }
-
         double
                 startTargetRatio = template.getRatio(),
                 startTargetRatio_inverse = 1 / startTargetRatio;
 
         if (startAlreadyDefined) {
-            printLine(INDENT.repeat(3) + "Start unit (" + startUnit.getShortName() + ") is already defined.");
+            printIndentedLineIf(indent + 1, printToConsole,
+                    "Start unit (" + startUnit.getShortName() + ") is already defined.");
             return processNewUnit(ratioMap, alreadyDefinedUnits,
-                    targetUnit, startUnit, startTargetRatio_inverse, startTargetRatio);
+                    targetUnit, startUnit, startTargetRatio_inverse, startTargetRatio,
+                    printToConsole, indent + 1);
         } else if (targetAlreadyDefined) {
-            printLine(INDENT.repeat(3) + "Target unit (" + targetUnit.getShortName() + ") is already defined.");
+            printIndentedLineIf(indent + 1, printToConsole,
+                    "Target unit (" + targetUnit.getShortName() + ") is already defined.");
             return processNewUnit(ratioMap, alreadyDefinedUnits,
-                    startUnit, targetUnit, startTargetRatio, startTargetRatio_inverse);
+                    startUnit, targetUnit, startTargetRatio, startTargetRatio_inverse,
+                    printToConsole, indent + 1);
         } else {
-            printLine(INDENT.repeat(3) + "Neither start nor target is defined.");
+            printIndentedLineIf(indent + 1, printToConsole, "Neither start nor target is defined.");
             return false;
         }
     }
 
+    @SuppressWarnings("SameParameterValue")
     private boolean processNewUnit(@NotNull Map<? super T, @NotNull Map<T, Double>> ratioMap,
                                    @NotNull Set<? extends T> alreadyDefinedUnits,
                                    T newUnit, T referenceUnit,
-                                   double newToReferenceRatio, double referenceToNewRatio) {
-        printLine(INDENT.repeat(3) + "Adding " + referenceUnit.getShortName() + " to map.");
+                                   double newToReferenceRatio, double referenceToNewRatio,
+                                   boolean printToConsole, int indent) {
+        printIndentedLineIf(indent, printToConsole, "Adding " + newUnit.getShortName() + " to map.");
         ratioMap.put(newUnit, new EnumMap<>(baseUnit.getDeclaringClass()));
 
-        printLine(INDENT.repeat(4) + "Direct conversions to/from: " + referenceUnit.getShortName());
+        printIndentedLineIf(indent + 1, printToConsole,
+                "Direct conversions to/from: " + referenceUnit.getShortName());
         ratioMap.get(newUnit).put(referenceUnit, newToReferenceRatio); //direct new->reference
         ratioMap.get(referenceUnit).put(newUnit, referenceToNewRatio); //direct reference->new
 
         for (T particularUnit : alreadyDefinedUnits) {
             if (particularUnit != newUnit && particularUnit != referenceUnit) {
-                printLine(INDENT.repeat(4) + "Direct conversions to/from: " + particularUnit.getShortName());
+                printIndentedLineIf(indent + 1, printToConsole,
+                        "Direct conversions to/from: " + particularUnit.getShortName());
 
                 //direct new->particular
                 double referenceToParticularRatio = ratioMap.get(referenceUnit).get(particularUnit);
@@ -145,6 +155,12 @@ public abstract class ConversionManager<T extends @NotNull Enum<T> & Dimensional
             }
         }
         return true;
+    }
+
+    private static void printIndentedLineIf(int indent, boolean print, @Nullable String message) {
+        if (print) {
+            printLine(INDENT.repeat(indent) + Objects.requireNonNullElse(message, ""));
+        }
     }
 
     //null target - base
@@ -179,6 +195,14 @@ public abstract class ConversionManager<T extends @NotNull Enum<T> & Dimensional
     }
 
     //
+    private static class ConversionRatiosInitializationException extends Exception {
+        //
+        ConversionRatiosInitializationException(@NotNull DimensionName dimensionName, @NotNull String message) {
+            super(dimensionName.getNameUppercase() + " conversion ratio initialization exception. " + message);
+        }
+    }
+
+    //
     private static class UnitConversionException extends Exception {
         private static final @NotNull String NULL_UNIT_NAME = "NULL";
 
@@ -197,7 +221,7 @@ public abstract class ConversionManager<T extends @NotNull Enum<T> & Dimensional
         }
     }
 
-    //
+    //a particular unit hasn't been added to the map, so can't be found within it
     private static final class UnitNotAddedException extends UnitConversionException {
         //
         UnitNotAddedException(@NotNull DimensionName dimensionName, @Nullable DimensionalUnit unit) {

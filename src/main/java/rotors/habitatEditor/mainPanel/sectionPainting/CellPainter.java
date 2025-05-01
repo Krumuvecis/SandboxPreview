@@ -6,8 +6,8 @@ import java.awt.Graphics;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import rotors.modularHabitat.HabitatModule;
-import rotors.modularHabitat.HabitatSectionCell;
+import rotors.rotatingHabitat.modularHabitat.HabitatModule;
+import rotors.rotatingHabitat.modularHabitat.HabitatSectionCell;
 
 //
 interface CellPainter extends BorderAndOverlayPainter {

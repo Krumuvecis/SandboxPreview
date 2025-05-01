@@ -4,11 +4,11 @@ import org.jetbrains.annotations.NotNull;
 
 //TODO: add docs
 @SuppressWarnings("MissingJavadoc")
-public interface DropdownableInterface {
+public interface DropdownableInterface<T extends @NotNull DropdownableInterface<T>> {
     //for graphical purposes
     @Override
     @NotNull String toString();
 
     //
-    <T extends @NotNull DropdownableInterface> T @NotNull [] getAll();
+    T @NotNull [] getAll();
 }

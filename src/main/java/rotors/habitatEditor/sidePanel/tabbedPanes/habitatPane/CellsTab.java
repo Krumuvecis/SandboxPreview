@@ -10,11 +10,11 @@ import org.jetbrains.annotations.Nullable;
 
 import static consoleUtils.SimplePrinting.printLine;
 
-import rotors.modularHabitat.HabitatModule;
-import rotors.modularHabitat.particularModules.SampleModule_light;
-import rotors.modularHabitat.particularModules.SampleModule_medium;
-import rotors.modularHabitat.particularModules.SampleModule_heavy;
-import rotors.modularHabitat.particularModules.SampleModule_blue;
+import rotors.rotatingHabitat.modularHabitat.HabitatModule;
+import rotors.rotatingHabitat.modularHabitat.particularModules.SampleModule_light;
+import rotors.rotatingHabitat.modularHabitat.particularModules.SampleModule_medium;
+import rotors.rotatingHabitat.modularHabitat.particularModules.SampleModule_heavy;
+import rotors.rotatingHabitat.modularHabitat.particularModules.SampleModule_blue;
 import rotors.habitatEditor.window.UserData.HabitatTabEnum;
 import rotors.habitatEditor.window.UserData.CellsTabData;
 

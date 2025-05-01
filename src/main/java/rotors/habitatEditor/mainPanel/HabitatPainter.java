@@ -6,9 +6,9 @@ import java.awt.Graphics;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import rotors.modularHabitat.HabitatSectionCell;
-import rotors.modularHabitat.habitatSection.HabitatSection;
-import rotors.modularHabitat.ModularHabitat;
+import rotors.rotatingHabitat.modularHabitat.HabitatSectionCell;
+import rotors.rotatingHabitat.modularHabitat.habitatSection.HabitatSection;
+import rotors.rotatingHabitat.modularHabitat.ModularHabitat;
 import rotors.habitatEditor.window.UserData;
 import rotors.habitatEditor.mainPanel.sectionPainting.HabitatSectionPainter;
 

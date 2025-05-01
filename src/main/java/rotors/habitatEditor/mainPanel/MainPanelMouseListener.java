@@ -8,10 +8,10 @@ import org.jetbrains.annotations.Nullable;
 
 import static consoleUtils.SimplePrinting.printLine;
 
-import rotors.modularHabitat.HabitatModule;
-import rotors.modularHabitat.HabitatSectionCell;
-import rotors.modularHabitat.habitatSection.HabitatSection;
-import rotors.modularHabitat.ModularHabitat;
+import rotors.rotatingHabitat.modularHabitat.HabitatModule;
+import rotors.rotatingHabitat.modularHabitat.HabitatSectionCell;
+import rotors.rotatingHabitat.modularHabitat.habitatSection.HabitatSection;
+import rotors.rotatingHabitat.modularHabitat.ModularHabitat;
 import rotors.habitatEditor.window.UserData;
 import rotors.habitatEditor.window.ObserverData;
 
