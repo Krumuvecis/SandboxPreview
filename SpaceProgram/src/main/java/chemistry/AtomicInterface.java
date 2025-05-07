@@ -5,7 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import dimensions.mass.Mass;
 
 //
-public interface AtomicInterface extends NamedInterface {
+public interface AtomicInterface {
     //
     @NotNull Mass getAtomicMass();
 }

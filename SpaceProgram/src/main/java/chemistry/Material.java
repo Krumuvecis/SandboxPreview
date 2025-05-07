@@ -1,6 +1,6 @@
 package chemistry;
 
 //
-public class Material /*implements UltraMixturialInterface*/ {
+public class Material implements UltraMixturialInterface {
     //
 }

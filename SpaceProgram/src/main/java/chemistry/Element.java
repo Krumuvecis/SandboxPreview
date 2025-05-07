@@ -4,10 +4,11 @@ import org.jetbrains.annotations.NotNull;
 
 import dimensions.mass.MassUnit;
 import dimensions.mass.Mass;
+import common.NamedInterface;
 
 //
 @SuppressWarnings("unused")
-public enum Element implements AtomicInterface {
+public enum Element implements NamedInterface, AtomicInterface {
     //period 1, s-type
     HYDROGEN(1, "H", "Hydrogen", new Mass(1.0080, MassUnit.G)),
     HELIUM(2, "He", "Helium", new Mass(4.0026, MassUnit.G)),
@@ -30,7 +31,7 @@ public enum Element implements AtomicInterface {
 
     //period 3, p-type
     ALUMINIUM(13, "Al", "Aluminium", new Mass(26.982, MassUnit.G)),
-    Si(14, "Si", "Silicon", new Mass(28.085, MassUnit.G)),
+    SILICON(14, "Si", "Silicon", new Mass(28.085, MassUnit.G)),
     PHOSPHORUS(15, "P", "Phosphorus", new Mass(30.974, MassUnit.G)),
     SULFUR(16, "S", "Sulfur", new Mass(32.06, MassUnit.G)),
     CHLORINE(17, "Cl", "Chlorine", new Mass(35.45, MassUnit.G)),

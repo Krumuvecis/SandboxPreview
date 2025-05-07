@@ -5,23 +5,28 @@ import java.util.Map;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import common.NamedInterface;
+
 //
-public abstract class SuperMolecularCompound<T extends @NotNull SuperElementalInterface>
-        extends Compound<T, @NotNull Double> implements SuperMolecularInterface {
+public abstract class SuperMolecularCompound<K extends @NotNull SuperElementalContainer<? extends @NotNull AtomicInterface, ? extends @NotNull Number>>
+        extends SuperMolecularContainer<K> implements NamedInterface {
+    private @Nullable String name;
+
     //
-    public SuperMolecularCompound(@Nullable String name, @NotNull Map<T, @NotNull Double> constituents) {
-        super(name, constituents);
+    public SuperMolecularCompound(@Nullable String name, @NotNull Map<K, @NotNull Double> constituents) {
+        super(constituents);
+        this.name = name;
     }
 
-    //for internal operations with constituents' values
-    @Override
-    public final @NotNull Double newValue() {
-        return (double) 0;
-    }
+    //
+    public abstract @NotNull String determineNewName();
 
-    //for internal operations with constituents' values
+    //
     @Override
-    public final @NotNull Double addToValue(@NotNull Double v, @NotNull Double d) {
-        return v + d;
+    public final @NotNull String getName() {
+        if (name == null) { //on-demand creates a new name
+            name = determineNewName();
+        }
+        return name;
     }
 }

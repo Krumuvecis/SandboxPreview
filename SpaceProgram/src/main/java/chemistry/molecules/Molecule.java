@@ -5,17 +5,21 @@ import java.util.Map;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import common.NamedInterface;
+import chemistry.AtomicInterface;
 import chemistry.Element;
-import chemistry.Compound;
+import chemistry.SuperElementalContainer;
 
 //
-public class Molecule extends Compound<@NotNull Element, @NotNull Integer> {
+public class Molecule extends SuperElementalContainer<@NotNull Element, @NotNull Integer> implements NamedInterface {
     private final @NotNull String formula;
+    private @Nullable String name;
 
     //
     public Molecule(@Nullable String name, @NotNull Map<@NotNull Element, @NotNull Integer> elements) {
-        super(name, elements);
+        super(elements);
         formula = determineFormula();
+        this.name = name;
     }
 
     //for unnamed molecules, uses formula for name
@@ -23,21 +27,15 @@ public class Molecule extends Compound<@NotNull Element, @NotNull Integer> {
         this(null, elements);
     }
 
-    //
+    //for internal operations with constituents' values
     @Override
-    public final @NotNull String determineNewName() {
-        return getFormula();
-    }
-
-    //for operations with constituents' values
-    @Override
-    public final @NotNull Integer newValue() {
+    protected final @NotNull Integer newValue() {
         return 0;
     }
 
-    //for operations with constituents' values
+    //for internal operations with constituents' values
     @Override
-    public final @NotNull Integer addToValue(@NotNull Integer v, @NotNull Integer d) {
+    protected final @NotNull Integer addToValue(@NotNull Integer v, @NotNull Integer d) {
         return v + d;
     }
 
@@ -47,7 +45,9 @@ public class Molecule extends Compound<@NotNull Element, @NotNull Integer> {
         for (@NotNull Element element : elements.keySet()) {
             formula.append(element.getSymbol());
             int index = elements.get(element);
-            formula.append(index);
+            if (index > 1) {
+                formula.append(index);
+            }
         }
         return formula.toString();
     }
@@ -55,5 +55,26 @@ public class Molecule extends Compound<@NotNull Element, @NotNull Integer> {
     //
     public final @NotNull String getFormula() {
         return formula;
+    }
+
+    //
+    @Override
+    public final @NotNull String getName() {
+        if (name == null) { //on-demand creates a new name
+            name = determineNewName();
+        }
+        return name;
+    }
+
+    private @NotNull String determineNewName() {
+        return getFormula();
+    }
+
+    //for internal operations of calculating constituent molar fractions
+    @Override
+    protected final <T extends @NotNull AtomicInterface> double getMolarFraction_withinConstituent(@NotNull Element constituent, T target) {
+        if (constituent == target) {
+            return 1;
+        } else return 0;
     }
 }
