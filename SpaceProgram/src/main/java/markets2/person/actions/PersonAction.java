@@ -1,22 +1,39 @@
-package markets2.person;
+package markets2.person.actions;
 
 import org.jetbrains.annotations.NotNull;
 
 import common.NamedInterface;
+import markets2.person.Person;
 
 //
-public abstract class PersonAction implements NamedInterface {
+public abstract class PersonAction<T extends @NotNull PersonActionTemplate> implements NamedInterface {
+    private final @NotNull T actionTemplate; //reference
     private final @NotNull Person person; //reference
-    private final @NotNull String name;
     private final int initialDuration;
     private int remainingDuration;
 
     //
-    public PersonAction(@NotNull Person person, @NotNull String name, int duration) {
+    public PersonAction(T actionTemplate, @NotNull Person person, int duration) {
+        this.actionTemplate = actionTemplate;
         this.person = person;
-        this.name = name;
         initialDuration = duration;
         remainingDuration = duration;
+    }
+
+    //for internal use
+    final T getActionTemplate() {
+        return actionTemplate;
+    }
+
+    //reference
+    public final @NotNull Person getPerson() {
+        return person;
+    }
+
+    //
+    @Override
+    public final @NotNull String getName() {
+        return actionTemplate.getName();
     }
 
     //call this to perform the action
@@ -27,19 +44,8 @@ public abstract class PersonAction implements NamedInterface {
         }
     }
 
-    //
-    @Override
-    public final @NotNull String getName() {
-        return name;
-    }
-
     //override this for the action behavior
     public abstract void action();
-
-    //
-    public final @NotNull Person getPerson() {
-        return person;
-    }
 
     //
     public final int getInitialDuration() {

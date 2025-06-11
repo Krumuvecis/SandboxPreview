@@ -10,6 +10,7 @@ import delayCalculator.delayOptions.DelayOptions;
 import ThreadAbstraction.AbstractUpdater;
 
 import markets2.World;
+import markets2.graphics.mainPanel.MainPanel;
 
 //
 public final class Window extends JFrame {
@@ -20,7 +21,7 @@ public final class Window extends JFrame {
     public Window(@NotNull World world) {
         super();
         setTitle("Markets 2 graphics");
-        setSize(1200, 700);
+        setSize(1250, 800);
         setLocation(50, 50);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setBackground(BACKGROUND_COLOR);

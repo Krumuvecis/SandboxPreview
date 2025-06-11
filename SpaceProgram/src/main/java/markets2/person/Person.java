@@ -1,111 +1,96 @@
 package markets2.person;
 
-import java.util.List;
-import java.util.Random;
+import java.util.Set;
+import java.util.Map;
+import java.util.HashMap;
 
+import markets2.person.skills.PersonSkills;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import common.NamedInterface;
-import markets2.World;
+import markets2.resources.ResourceInterface;
+import markets2.resources.ContinuousResource;
+import markets2.resources.DiscreteResource;
+import markets2.resources.ParticularResources;
+import markets2.resources.containers.Wallet;
+import markets2.resources.containers.Inventory;
 import markets2.TraderInterface;
-import markets2.Market;
-import markets2.Market.Order;
-
-import static markets2.Market.*;
+import markets2.market.MarketOrder;
+import markets2.market.MarketOrder.MarketOrderContinuous;
+import markets2.market.MarketOrder.MarketOrderDiscrete;
+import markets2.person.actions.PersonAction;
+import markets2.World;
 
 //
-public class Person implements NamedInterface, TraderInterface {
-    private static final @NotNull Random RANDOM = new Random();
-    private static final @NotNull String DEFAULT_NAME = "Person";
-    private static int UNNAMED_PERSON_INDEX = 1;
-    private static final double
-            MAXIMUM_HEALTH = 20,
-            MAXIMUM_HEALTH_REGEN_RATE = 1,
-            BASE_FOOD_CONSUMPTION = 1,
-            HEALTH_LOSS_PER_MISSING_FOOD = 5,
-            FOOD_CONSUMPTION_PER_HEALTH_REGEN = 1,
-            MAX_BASE_FARMING_RATE = 1,
-            MIN_BASE_FARMING_RATE = 0.6,
-            SKILL_FORGET_CHANCE = 0.05,
-            SKILL_FORGET_RATE = 0.1,
-            SKILL_LEARN_CHANCE = 0.05,
-            SKILL_LEARN_RATE = 0.1,
-            MAX_TRADE_VOLUME = 8,
-            PRICE_CHANGE_DESPERATE = 0.15,
-            PRICE_CHANGE_FULL = -0.1,
-            PRICE_CHANGE_SATISFIED = 0.01,
-            BREED_FOOD_COST = 5,
-            BREED_FOOD_TRANSFER = 5,
-            PARENT_FARMING_SKILL_TRANSFER_MAX_RATIO = 1;
+public class Person extends NamedPerson implements TraderInterface {
+    public static final double
+            FOOD_RESERVE_DURATION_DESPERATE = 3,
+            FOOD_RESERVE_DURATION_ANXIOUS = 6,
+            FOOD_RESERVE_DURATION_SATISFIED = 40,
+            BASKET_YIELD_INCREASE = 2; //times
+    private static final double CRAFT_BASKET_BASE_STICKS_CONSUMPTION = 5;
     private final @NotNull World world; //reference
-    private final @NotNull String name;
-    private boolean alive;
-    private int age;
-    private double health;
-    private final @NotNull PersonInventory inventory;
-    private @Nullable PersonAction action;
-    private double baseFarmingRate;
-    public double maximumFoodReserveDuration; //temporary; TODO: rework
+    private final @NotNull Wallet wallet = new Wallet();
+    private final @NotNull Inventory inventory = new Inventory();
+    private final @NotNull PersonHealth health = new PersonHealth();
+    private final @NotNull PersonNutrition nutrition;
+    private final @NotNull PersonSkills skills;
+    public double
+            maximumYield_gatherFood = 0, //temporary; TODO: rework
+            maximumYield_gatherSticks = 0, //temporary; TODO: rework
+            minimumConsumption_sticks_craftBasket = Double.POSITIVE_INFINITY; //temporary; TODO: rework
+    private @Nullable PersonAction action = null;
+    private final @NotNull Map<@NotNull ResourceInterface, @NotNull MarketOrder<? extends @NotNull Number>>
+            sellOrders = new HashMap<>(),
+            buyOrders = new HashMap<>();
+    private final @NotNull PersonActionAI actionAI;
+    private final @NotNull PersonMarketAI marketAI;
 
-    //
-    public Person(@NotNull World world, @NotNull String name, double parentFarmingSkill) {
+    //null name generates new name; null parent-skills generate default skills
+    public Person(@NotNull World world, @Nullable String name, @Nullable PersonSkills parentSkills) {
+        super(name);
         this.world = world;
-        this.name = name;
-        alive = true;
-        age = 0;
-        health = MAXIMUM_HEALTH;
-        inventory = new PersonInventory();
-        action = null;
-        baseFarmingRate =
-                MIN_BASE_FARMING_RATE +
-                RANDOM.nextDouble() * (MAX_BASE_FARMING_RATE - MIN_BASE_FARMING_RATE) +
-                RANDOM.nextDouble() * parentFarmingSkill * PARENT_FARMING_SKILL_TRANSFER_MAX_RATIO;
-
-        maximumFoodReserveDuration = 0;
+        nutrition = new PersonNutrition(health, inventory);
+        skills = new PersonSkills(parentSkills);
+        actionAI = new PersonActionAI(world, this);
+        marketAI = new PersonMarketAI(world, this);
     }
 
-    //unnamed, default name
-    public Person(@NotNull World world, double parentFarmingSkill) {
-        this(world, getNewDefaultName(), parentFarmingSkill);
-    }
-
-    private static @NotNull String getNewDefaultName() {
-        @NotNull String name = DEFAULT_NAME + "-" + UNNAMED_PERSON_INDEX;
-        UNNAMED_PERSON_INDEX ++;
-        return name;
+    //reference for breeding
+    public final @NotNull World getWorld() {
+        return world;
     }
 
     //
     @Override
-    public final @NotNull String getName() {
-        return name;
+    public final @NotNull Wallet getWallet() {
+        return wallet;
     }
 
     //
-    public final boolean isAlive() {
-        return alive;
+    @Override
+    public final @NotNull Inventory getInventory() {
+        return inventory;
+    }
+
+    //TODO: temporary; rework
+    public final boolean hasBasket() {
+        return inventory.getDiscreteResourceCount(ParticularResources.BASKET) > 0;
     }
 
     //
-    public final int getAge() {
-        return age;
-    }
-
-    //
-    public final double getHealth() {
+    public final @NotNull PersonHealth getHealth() {
         return health;
     }
 
     //
-    public static double getMaximumHealth() {
-        return MAXIMUM_HEALTH;
+    public final @NotNull PersonNutrition getNutrition() {
+        return nutrition;
     }
 
     //
-    @Override
-    public final @NotNull PersonInventory getInventory() {
-        return inventory;
+    public final @NotNull PersonSkills getSkills() {
+        return skills;
     }
 
     //
@@ -114,247 +99,128 @@ public class Person implements NamedInterface, TraderInterface {
     }
 
     //
-    public final double getBaseFarmingRate() {
-        return baseFarmingRate;
+    @Override
+    public final void removeCompletedSellOrder(@NotNull ResourceInterface resource,
+                                               @NotNull MarketOrder<? extends @NotNull Number> order) {
+        if (!sellOrders.remove(resource, order)) {
+            throw new RuntimeException("Couldn't remove a completed sell order.");
+        }
+    }
+
+    //
+    @Override
+    public final void removeCompletedBuyOrder(@NotNull ResourceInterface resource,
+                                              @NotNull MarketOrder<? extends @NotNull Number> order) {
+        if (!buyOrders.remove(resource, order)) {
+            throw new RuntimeException("Couldn't remove a completed buy order.");
+        }
     }
 
     //gets called by a thread
-    public final void updateDecision() {
-        if (alive) {
+    public final void updateActionDecisions() {
+        if (health.isAlive()) {
+            maximumYield_gatherFood = world.getMaximumYield_gatherFood() * skills.getSkill_gatherFood();
+            if (hasBasket()) {
+                maximumYield_gatherFood *= BASKET_YIELD_INCREASE;
+            }
+            maximumYield_gatherSticks = world.getMaximumYield_gatherSticks() * skills.getSkill_gatherSticks();
+            minimumConsumption_sticks_craftBasket = CRAFT_BASKET_BASE_STICKS_CONSUMPTION / skills.getSkill_craftBasket();
+
             checkPreviousAction();
-
-            double missingHealth = calculateMissingHealth();
-            decideAction(missingHealth);
-
-            //do some more stuff here?
+            if (action == null) { //non-null action interrupts must have already been checked
+                action = actionAI.decideNewAction();
+                //do some more stuff here?
+            }
         }
-    }
-
-    private void checkPreviousAction() {
-        if (action != null && action.getRemainingDuration() <= 0) {
-            action = null;
-        }
-    }
-
-    private double calculateMissingHealth() {
-        return Math.max(0, MAXIMUM_HEALTH - health);
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
-    private void decideAction(double missingHealth) {
+    private void checkPreviousAction() {
         if (action != null) {
-            //busy; TODO: interrupt
-        } else {
-            double foodAtStart = inventory.food;
-            double actualFoodReserveDuration = foodAtStart / BASE_FOOD_CONSUMPTION;
-
-            double moneyAtStart = inventory.money;
-            @NotNull Market market = world.getMarket();
-
-            double
-                    foodLastPrice = getFoodLastPrice(market),
-                    referencePrice,
-                    maximumBuyableFood;
-            if (foodLastPrice <= 0) {
-                referencePrice = Double.POSITIVE_INFINITY;
-                maximumBuyableFood = 0;
-            } else {
-                referencePrice = foodLastPrice;
-                maximumBuyableFood = moneyAtStart / referencePrice;
-            }
-
-            double maximumFood = foodAtStart + maximumBuyableFood;
-            maximumFoodReserveDuration = maximumFood / BASE_FOOD_CONSUMPTION;
-
-            double targetMinimumFoodReserveDuration = 5;
-            double targetMaximumFoodReserveDuration = 40;
-            double targetMinimumFoodReserve = targetMinimumFoodReserveDuration * BASE_FOOD_CONSUMPTION;
-            double targetMaximumFoodReserve = targetMaximumFoodReserveDuration * BASE_FOOD_CONSUMPTION;
-            double deltaActualMinimumFoodReserve = foodAtStart - targetMinimumFoodReserve;
-            double deltaMaximumFoodReserve = maximumFood - targetMaximumFoodReserve;
-
-            double inventoryFilledCapacity = inventory.getFilledCapacity();
-            double inventoryMaxCapacity = inventory.getMaxCapacity();
-            double inventoryRemainingCapacity = inventoryMaxCapacity - inventoryFilledCapacity;
-
-            double expectedFarmingYield = calculateExpectedFarmingYield();
-            double expectedFarmingSurplus = expectedFarmingYield - BASE_FOOD_CONSUMPTION;
-
-            if (deltaActualMinimumFoodReserve < 0) { //needs actual food
-                if (expectedFarmingSurplus < 0) { //farm and buy food
-                    if (maximumBuyableFood > 0) { //buy food (at lowest-sell/instabuy price)
-                        double
-                                buyPrice = Math.max(0, referencePrice * (1 + PRICE_CHANGE_DESPERATE)),// * RANDOM.nextDouble())),
-                                buyVolume_desired = -deltaActualMinimumFoodReserve,
-                                buyVolume_affordable = moneyAtStart / buyPrice;
-                        action = newBuyAction(buyPrice, Math.min(MAX_TRADE_VOLUME, Math.min(buyVolume_desired, buyVolume_affordable)));
-                    } else { //no money, farm anyway - inefficient subsistence farming; TODO: should sell other assets before farming
-                        action = newFarmAction();
-                    }
-                } else { //just farm
-                    action = newFarmAction();
-                }
-            } else {
-                double spareFood = Math.max(0, deltaActualMinimumFoodReserve);
-
-                if (deltaMaximumFoodReserve < 0) { //needs wealth
-                    if (expectedFarmingYield > inventoryRemainingCapacity) {
-                        //not farm, sell food (at highest-buy/instasell price)
-                        double sellPrice;
-                        /*if (foodLastPrice > 0) {
-                            sellPrice = foodLastPrice * (1 + PRICE_CHANGE_FULL * RANDOM.nextDouble());
-                        } else {*/
-                            sellPrice = getHighestBuyPrice(market) * (1 + PRICE_CHANGE_FULL);// * RANDOM.nextDouble());
-                        //}
-                        action = newSellAction(sellPrice, Math.min(MAX_TRADE_VOLUME, spareFood));
-                    } else {
-                        //farm and sell
-                        action = newFarmAction();
-                    }
-                } else { //satisfied
-
-                    //sell spare? breed?
-
-                    if (spareFood >= BREED_FOOD_COST + BREED_FOOD_TRANSFER) {
-                        action = newBreedAction();
-                    } /*else {
-                        double sellPrice = foodInstasellPrice * (1 + PRICE_CHANGE_SATISFIED);
-                        action = newSellAction(sellPrice, Math.min(MAX_TRADE_VOLUME, spareFood));
-                    }*/
-                }
+            if (action.getRemainingDuration() <= 0) { //previous action complete
+                action = null;
+            } else { //busy
+                //TODO: interrupt; maybe bring this to AI?
             }
         }
     }
 
-    private double calculateExpectedFarmingYield() {
-        return baseFarmingRate * world.getMaximumFarmingYield();
-    }
-
-    private double getFoodLastPrice(@NotNull Market market) {
-        @NotNull List<@NotNull MarketHistoryDataPoint> reverseHistory = market.getHistory().reversed();
-        for (@NotNull MarketHistoryDataPoint dataPoint : reverseHistory) {
-            if (dataPoint.volume() > 0) {
-                return dataPoint.VWAPrice();
-            }
-        }
-        return 0;
-    }
-
-    private double getHighestBuyPrice(@NotNull Market market) {
-        @Nullable Order highestBuyOrder = market.getHighestBuyOrder();
-        if (highestBuyOrder != null) {
-            return highestBuyOrder.getPrice();
-        }
-        return 0;
-    }
-
-    private @NotNull PersonAction newFarmAction() {
-        return new PersonAction(this, "Farm", 1) {
-            @Override
-            public void action() {
-                double standardYield = baseFarmingRate * world.getMaximumFarmingYield();
-                double randomInefficiencyRange = 0.2;
-                inventory.food += standardYield * (1 - randomInefficiencyRange * RANDOM.nextDouble());
-
-                //increase skills
-                if (RANDOM.nextDouble() < SKILL_LEARN_CHANCE) {
-                    baseFarmingRate *= (1 + RANDOM.nextDouble() * SKILL_LEARN_RATE);
-                }
-            }
-        };
-    }
-
-    private @NotNull PersonAction newBuyAction(double price, double volume) {
-        return new PersonAction(this, "Buy food", 1) {
-            @Override
-            public void action() {
-                world.getMarket().placeBuyOrder(new Order(getPerson(), price, Math.min(inventory.money / price, volume)));
-            }
-        };
-    }
-
-    private @NotNull PersonAction newSellAction(double price, double volume) {
-        return new PersonAction(this, "Sell food", 1) {
-            @Override
-            public void action() {
-                world.getMarket().placeSellOrder(new Order(getPerson(), price, volume));
-            }
-        };
-    }
-
-    private @NotNull PersonAction newBreedAction() {
-        return new PersonAction(this, "Breed", 1) {
-            @Override
-            public void action() {
-                getPerson().inventory.food -= (BREED_FOOD_COST + BREED_FOOD_TRANSFER);
-                @NotNull Person kid = new Person(world, getPerson().baseFarmingRate);
-                kid.inventory.food += BREED_FOOD_TRANSFER;
-                world.addPerson(kid);
-            }
-        };
-    }
-
-    //gets called by a thread
-    public final void updateUnconscious() {
-        if (alive) {
-            performAction();
-            eat(calculateMissingHealth()); //eat and heal
-
-            //reduce skills
-            if (RANDOM.nextDouble() < SKILL_FORGET_CHANCE) {
-                baseFarmingRate *= (1 - RANDOM.nextDouble() * SKILL_FORGET_RATE);
+    //gets called by a thread; performs actions and updates skills
+    public final void performAction() {
+        if (health.isAlive()) {
+            if (action != null) {
+                action.perform();
             }
 
-            //suffer from injuries here
-
-            age ++;
-            deathCheck();
+            skills.update();
         }
     }
 
-    private void performAction() {
-        if (action != null) {
-            action.perform();
+    //gets called by a thread; manages trade orders after performing the action
+    public final void updateMarketDecisions() {
+        if (health.isAlive()) {
+            //first, remove all previous orders
+            retractSellOrders();
+            retractBuyOrders();
+
+            //then, place new orders
+            marketAI.decideMarketActions();
         }
     }
 
-    private void eat(double missingHealth) {
-        double
-                availableFood = inventory.food,
-                eatenFood = 0,
-                deltaHealth = 0;
-
-        if (availableFood <= BASE_FOOD_CONSUMPTION) { //missing food, losing health
-            double missingFood = BASE_FOOD_CONSUMPTION - availableFood;
-            eatenFood = availableFood;
-            deltaHealth = -missingFood * HEALTH_LOSS_PER_MISSING_FOOD;
-        } else { //abundant food, recovering health
-            double
-                    regenableHealth = Math.min(missingHealth, MAXIMUM_HEALTH_REGEN_RATE),
-                    requiredFood = BASE_FOOD_CONSUMPTION + regenableHealth * FOOD_CONSUMPTION_PER_HEALTH_REGEN;
-            if (availableFood >= requiredFood) { //recovers health maximally
-                eatenFood = requiredFood;
-                deltaHealth = regenableHealth;
-            } else { //recovers health partially
-                double
-                        foodRegenPart = availableFood - BASE_FOOD_CONSUMPTION,
-                        healthRegen = foodRegenPart / FOOD_CONSUMPTION_PER_HEALTH_REGEN;
-                eatenFood = availableFood;
-                deltaHealth = healthRegen;
-            }
-        }
-
-        inventory.food -= eatenFood;
-        health += deltaHealth;
-    }
-
-    private void deathCheck() {
-        if (isDead()) {
-            alive = false;
+    private void retractSellOrders() {
+        for (@NotNull ResourceInterface resource : Set.copyOf(sellOrders.keySet())) {
+            @NotNull MarketOrder<? extends @NotNull Number> order = sellOrders.get(resource);
+            if (resource instanceof @NotNull ContinuousResource continuousResource) {
+                if (order instanceof @NotNull MarketOrderContinuous orderContinuous) {
+                    world.getMarket().getMarket(continuousResource).retractSellOrder(orderContinuous);
+                } else throw new RuntimeException("Unrecognized market order type");
+            } else if (resource instanceof @NotNull DiscreteResource discreteResource) {
+                if (order instanceof @NotNull MarketOrderDiscrete orderDiscrete) {
+                    world.getMarket().getMarket(discreteResource).retractSellOrder(orderDiscrete);
+                } else throw new RuntimeException("Unrecognized market order type");
+            } else throw new RuntimeException("Unrecognized resource type");
+            sellOrders.remove(resource);
         }
     }
 
-    private boolean isDead() {
-        return health <= 0;
+    private void retractBuyOrders() {
+        for (@NotNull ResourceInterface resource : Set.copyOf(buyOrders.keySet())) {
+            @NotNull MarketOrder<? extends @NotNull Number> order = buyOrders.get(resource);
+            if (resource instanceof @NotNull ContinuousResource continuousResource) {
+                if (order instanceof @NotNull MarketOrderContinuous orderContinuous) {
+                    world.getMarket().getMarket(continuousResource).retractBuyOrder(orderContinuous);
+                } else throw new RuntimeException("Unrecognized market order type");
+            } else if (resource instanceof @NotNull DiscreteResource discreteResource) {
+                if (order instanceof @NotNull MarketOrderDiscrete orderDiscrete) {
+                    world.getMarket().getMarket(discreteResource).retractBuyOrder(orderDiscrete);
+                } else throw new RuntimeException("Unrecognized market order type");
+            } else throw new RuntimeException("Unrecognized resource type");
+            buyOrders.remove(resource);
+        }
+    }
+
+    //for internal use
+    public final void addSellOrder(@NotNull ResourceInterface resource,
+                            @NotNull MarketOrder<? extends @NotNull Number> order) {
+        sellOrders.put(resource, order);
+    }
+
+    //for internal use
+    public final void addBuyOrder(@NotNull ResourceInterface resource,
+                           @NotNull MarketOrder<? extends @NotNull Number> order) {
+        buyOrders.put(resource, order);
+    }
+
+    //gets called by a thread; eating, healing, aging, death check, etc.
+    public final void updateNutritionAndHealth() {
+        if (health.isAlive()) {
+            nutrition.update();
+            health.update();
+        }
+        if (!health.isAlive()) {
+            retractSellOrders();
+            retractSellOrders();
+        }
     }
 }

@@ -2,24 +2,27 @@ package markets2;
 
 import java.util.Set;
 import java.util.HashSet;
-import java.util.Random;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Unmodifiable;
 
+import markets2.resources.ParticularResources;
+import markets2.market.MultiMarket;
+import markets2.granary.Granary;
 import markets2.person.Person;
 
 //
 public final class World {
-    private static final @NotNull Random RANDOM = new Random();
+    private static final int YEAR_LENGTH = 40;
     private static final double
-            YEAR_LENGTH = 40,
             MINIMUM_WEATHER_FERTILITY = -0.1,
             MAXIMUM_WEATHER_FERTILITY = 1,
-            TOTAL_LAND = 10,
-            BASE_FARMING_YIELD_PER_AREA = 1;
+            TOTAL_LAND = 5,
+            BASE_YIELD_PER_AREA_FOOD = 1,
+            BASE_YIELD_PER_AREA_STICKS = 0.5;
     private int elapsedTime;
     private double weatherFertility;
-    private final @NotNull Market market;
+    private final @NotNull MultiMarket market;
     private final @NotNull Set<@NotNull Person> people;
     private final @NotNull Granary granary;
     private final @NotNull Bank bank;
@@ -27,15 +30,30 @@ public final class World {
     //
     public World() {
         elapsedTime = 0;
-        market = new Market(this);
+        market = new MultiMarket(this);
         people = new HashSet<>();
-        granary = new Granary(market);
+        granary = new Granary(market.getMarket(ParticularResources.FOOD));
         bank = new Bank();
     }
 
-    //
+    //total elapsed time from the very beginning
     public int getElapsedTime() {
         return elapsedTime;
+    }
+
+    //
+    public int getFullYears() {
+        return Math.floorDiv(elapsedTime, YEAR_LENGTH);
+    }
+
+    //capped at year length, repeats every year
+    public int getDayOfYear() {
+        return elapsedTime - getFullYears() * YEAR_LENGTH;
+    }
+
+    //fraction of the elapsed year vs total year length
+    public double getYearFraction() {
+        return (double) getDayOfYear() / YEAR_LENGTH;
     }
 
     //
@@ -48,19 +66,24 @@ public final class World {
         return TOTAL_LAND / Math.max(1, people.size());
     }
 
-    //
-    public double getMaximumFarmingYield() {
-        return getLandPerPerson() * BASE_FARMING_YIELD_PER_AREA * weatherFertility;
+    //land * fertility
+    public double getMaximumYield_gatherFood() {
+        return getLandPerPerson() * BASE_YIELD_PER_AREA_FOOD * weatherFertility;
+    }
+
+    //land * fertility
+    public double getMaximumYield_gatherSticks() {
+        return getLandPerPerson() * BASE_YIELD_PER_AREA_STICKS;
     }
 
     //
-    public @NotNull Market getMarket() {
+    public @NotNull MultiMarket getMarket() {
         return market;
     }
 
     //
-    public @NotNull Set<@NotNull Person> getPeople() {
-        return people;
+    public @NotNull @Unmodifiable Set<@NotNull Person> getPeople() {
+        return Set.copyOf(people);
     }
 
     //
@@ -78,43 +101,57 @@ public final class World {
         //world
         updateWeather();
 
+        //people actions
+        updatePeople_actionDecisions();
+        updatePeople_performActions();
+
         //markets
-        updatePeopleDecisions();
-        granary.update();
-        market.update();
+        granary.update(); //does the granary orders
+        updatePeople_marketDecisions(); //does the people orders
+        market.update(); //fulfills the orders
 
-        //TODO: update more stuff here
-
-        //people
-        updatePeopleUnconscious();
+        //people uncontrolled
+        updatePeople_nutritionAndHealth();
         removeDeadPeople();
         elapsedTime++;
     }
 
     private void updateWeather() {
-        //fertility = MINIMUM_FERTILITY + RANDOM.nextDouble() * (MAXIMUM_FERTILITY - MINIMUM_FERTILITY);
-        double yearFraction = 2 * Math.PI * elapsedTime / YEAR_LENGTH;
-        double weatherFertilityRange = MAXIMUM_WEATHER_FERTILITY - MINIMUM_WEATHER_FERTILITY;
-        weatherFertility = Math.max(0, MINIMUM_WEATHER_FERTILITY + weatherFertilityRange * (1 + Math.cos(yearFraction)) / 2);
+        double
+                weatherFertilityRange = MAXIMUM_WEATHER_FERTILITY - MINIMUM_WEATHER_FERTILITY,
+                uncappedWeatherFertility = MINIMUM_WEATHER_FERTILITY + weatherFertilityRange * (1 + Math.cos(getYearFraction())) / 2;
+        weatherFertility = Math.max(0, uncappedWeatherFertility);
     }
 
-    private void updatePeopleDecisions() {
-        for (@NotNull Person person : people) {
-            person.updateDecision();
+    private void updatePeople_actionDecisions() {
+        for (@NotNull Person person : getPeople()) {
+            person.updateActionDecisions();
         }
     }
 
-    private void updatePeopleUnconscious() {
-        for (@NotNull Person person : Set.copyOf(people)) {
-            person.updateUnconscious();
+    private void updatePeople_performActions() {
+        for (@NotNull Person person : getPeople()) {
+            person.performAction();
+        }
+    }
+
+    private void updatePeople_marketDecisions() {
+        for (@NotNull Person person : getPeople()) {
+            person.updateMarketDecisions();
+        }
+    }
+
+    private void updatePeople_nutritionAndHealth() {
+        for (@NotNull Person person : getPeople()) {
+            person.updateNutritionAndHealth();
         }
     }
 
     private void removeDeadPeople() {
-        people.removeIf(person -> !person.isAlive());
+        people.removeIf(person -> !person.getHealth().isAlive());
     }
 
-    //
+    //adds a new person to the world
     public void addPerson(@NotNull Person person) {
         people.add(person);
     }

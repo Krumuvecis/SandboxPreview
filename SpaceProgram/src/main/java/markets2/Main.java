@@ -9,7 +9,7 @@ import markets2.graphics.Window;
 
 //
 public class Main {
-    private static final long WORLD_UPDATE_DELAY = 1000;
+    private static final long WORLD_UPDATE_DELAY = 200;
     private static final int STARTING_POPULATION = 2;
 
     //
@@ -27,7 +27,7 @@ public class Main {
 
     private static void addStartingPopulation(@NotNull World world) {
         for (int i = 0; i < STARTING_POPULATION; i ++) {
-            world.addPerson(new Person(world, 0));
+            world.addPerson(new Person(world, null, null));
         }
     }
 
