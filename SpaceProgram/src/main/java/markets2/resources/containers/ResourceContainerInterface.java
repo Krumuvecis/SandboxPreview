@@ -1,30 +1,18 @@
 package markets2.resources.containers;
 
-import java.util.Map;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Unmodifiable;
-
-import markets2.resources.ResourceInterface;
+import markets2.resources.ResourceCollection;
 
 //
-public interface ResourceContainerInterface {
-    //absolute amount
-    double getMaximumCapacity();
-
-    //absolute amount
-    double getFilledCapacity();
-
-    //absolute amount
-    default double getRemainingCapacity() {
-        return Math.max(0, getMaximumCapacity() - getFilledCapacity());
+public interface ResourceContainerInterface extends ResourceCollection, LimitedMassInterface, LimitedVolumeInterface {
+    //
+    @Override
+    default double getTakenMass() {
+        return getTotalMass();
     }
 
-    //fraction of maximum
-    default double getCapacityFullness() {
-        return getFilledCapacity() / getMaximumCapacity();
+    //
+    @Override
+    default double getTakenVolume() {
+        return getTotalVolume();
     }
-
-    //for output purposes
-    @NotNull @Unmodifiable Map<@NotNull ResourceInterface, @NotNull Double> getAllResourceAmounts();
 }
