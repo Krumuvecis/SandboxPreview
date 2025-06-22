@@ -4,8 +4,8 @@ import org.jetbrains.annotations.NotNull;
 
 import markets2.resources.ParticularResources;
 import markets2.resources.ContinuousResource;
-import markets2.resources.containers.Wallet;
-import markets2.resources.containers.Inventory;
+import markets2.Wallet;
+import markets2.person.PersonInventory;
 import markets2.person.Person;
 import markets2.World;
 
@@ -19,7 +19,7 @@ public final class BreedAction extends PersonAction {
             FOOD_INHERITANCE_RATIO = 0.2;
     private static final @NotNull ContinuousResource FOOD = ParticularResources.FOOD; //cache
     private final @NotNull World world; //reference
-    private final @NotNull Inventory parentInventory; //cache
+    private final @NotNull PersonInventory parentInventory; //cache
     private final @NotNull Wallet parentWallet; //cache
 
     //

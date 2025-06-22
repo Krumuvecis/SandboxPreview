@@ -9,7 +9,6 @@ import org.jetbrains.annotations.Unmodifiable;
 import markets2.resources.ContinuousResource;
 import markets2.resources.DiscreteResource;
 import markets2.resources.ParticularResources;
-import markets2.resources.containers.Inventory;
 import markets2.market.MarketHistoryDataPoint;
 import markets2.market.MarketOrder.MarketOrderContinuous;
 import markets2.market.MarketOrder.MarketOrderDiscrete;
@@ -163,7 +162,7 @@ class PersonMarketAI {
     }
 
     private void sellAssets(double priceChange, double retainableFood, int retainableBaskets) {
-        @NotNull Inventory inventory = person.getInventory();
+        @NotNull PersonInventory inventory = person.getInventory();
 
         //check continuous resources
         @NotNull @Unmodifiable Map<@NotNull ContinuousResource, @NotNull Double>

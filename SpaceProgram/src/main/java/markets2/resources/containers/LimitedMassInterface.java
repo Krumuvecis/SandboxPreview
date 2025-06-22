@@ -1,7 +1,7 @@
 package markets2.resources.containers;
 
 //
-public interface LimitedMassInterface {
+interface LimitedMassInterface {
     //
     double getTakenMass();
 

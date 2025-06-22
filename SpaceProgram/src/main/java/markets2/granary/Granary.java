@@ -4,9 +4,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import markets2.resources.ResourceInterface;
+import markets2.resources.UnrecognizedResourceType;
 import markets2.resources.ParticularResources;
-import markets2.resources.containers.Wallet;
-import markets2.resources.containers.Inventory;
+import markets2.resources.ResourceAmount;
+import markets2.Wallet;
 import markets2.TraderInterface;
 import markets2.market.MarketHistoryDataPoint;
 import markets2.market.MarketOrder;
@@ -27,7 +28,7 @@ public class Granary implements TraderInterface {
             INITIAL_FOOD_AMOUNT = 25;
     private final @NotNull SingleResourceMarketContinuous foodMarket;
     private final @NotNull Wallet wallet;
-    private final @NotNull Inventory inventory;
+    private final @NotNull GranaryInventory inventory;
     private double debt; //standing debt to bank
     private double
             referencePrice,
@@ -42,14 +43,18 @@ public class Granary implements TraderInterface {
     public Granary(@NotNull SingleResourceMarketContinuous foodMarket) {
         this.foodMarket = foodMarket;
         wallet = new Wallet();
-        inventory = new Inventory(Double.POSITIVE_INFINITY);
+        inventory = new GranaryInventory();
         debt = 0;
         referencePrice = INITIAL_PRICE;
         totalAssets = 0;
         granaryPriceCalculator = new GranaryPriceCalculator(this);
         graphicalAdapter = new GranaryGraphicalAdapter(this);
 
-        inventory.addContinuousResource(ParticularResources.FOOD, INITIAL_FOOD_AMOUNT); //starting capital
+        try {
+            inventory.add(new ResourceAmount.ContinuousResourceAmount(ParticularResources.FOOD, INITIAL_FOOD_AMOUNT)); //starting capital
+        } catch (@NotNull UnrecognizedResourceType e) {
+            throw new RuntimeException(e);
+        }
     }
 
     //
@@ -66,7 +71,7 @@ public class Granary implements TraderInterface {
 
     //
     @Override
-    public final @NotNull Inventory getInventory() {
+    public final @NotNull GranaryInventory getInventory() {
         return inventory;
     }
 
@@ -128,9 +133,15 @@ public class Granary implements TraderInterface {
     private double calculateTotalAssets() {
         double
                 money = wallet.getMoney(),
-                foodAmount = inventory.getContinuousResourceAmount(ParticularResources.FOOD),
-                foodValue = foodAmount * referencePrice;
-        return money + foodValue;
+                totalAssets = money;
+
+        @Nullable ResourceAmount<? extends @NotNull ResourceInterface, ? extends @NotNull Number>
+                foodAmount = inventory.get(ParticularResources.FOOD);
+        if (foodAmount != null) {
+            totalAssets += foodAmount.getMass() * referencePrice;
+        }
+
+        return totalAssets;
     }
 
     private void manageDebt() {

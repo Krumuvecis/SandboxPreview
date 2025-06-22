@@ -1,4 +1,4 @@
-package markets2.resources.containers;
+package markets2;
 
 //
 public class Wallet {

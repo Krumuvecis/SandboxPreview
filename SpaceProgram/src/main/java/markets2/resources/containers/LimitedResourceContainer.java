@@ -1,12 +1,7 @@
 package markets2.resources.containers;
 
-import java.util.Collections;
-import java.util.Set;
-import java.util.HashSet;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Unmodifiable;
 
 import markets2.resources.ResourceInterface;
 import markets2.resources.DiscreteResource;
@@ -15,47 +10,24 @@ import markets2.resources.UnrecognizedResourceType;
 import markets2.resources.ResourceAmount;
 import markets2.resources.ResourceAmount.DiscreteResourceAmount;
 import markets2.resources.ResourceAmount.ContinuousResourceAmount;
-import markets2.resources.ResourceCollection;
 
 //
-public class LimitedResourceContainer extends AbstractResourceContainer implements LimitedMassInterface, LimitedVolumeInterface {
-    private final double
-            massLimit,
-            volumeLimit;
-
-    //
-    public LimitedResourceContainer(double massLimit, double volumeLimit) {
-        super();
-        this.massLimit = massLimit;
-        this.volumeLimit = volumeLimit;
-    }
-
+public interface LimitedResourceContainer extends ResourceContainerInterface, LimitedMassInterface, LimitedVolumeInterface {
     //
     @Override
-    public final double getTakenMass() {
+    default double getTakenMass() {
         return getTotalMass();
     }
 
     //
     @Override
-    public final double getTakenVolume() {
+    default double getTakenVolume() {
         return getTotalVolume();
     }
 
-    //
-    @Override
-    public final double getLimit_mass() {
-        return massLimit;
-    }
-
-    //
-    @Override
-    public final double getLimit_volume() {
-        return volumeLimit;
-    }
-
     //returns remainder
-    public final @NotNull ResourceAmount<? extends @NotNull ResourceInterface, ? extends @NotNull Number> add(
+    @Override
+    default @NotNull ResourceAmount<? extends @NotNull ResourceInterface, ? extends @NotNull Number> add(
             @NotNull ResourceAmount<? extends @NotNull ResourceInterface, ? extends @NotNull Number> addend)
             throws UnrecognizedResourceType {
         @NotNull ResourceInterface resource = addend.getResource();
@@ -70,92 +42,65 @@ public class LimitedResourceContainer extends AbstractResourceContainer implemen
     }
 
     private int addDiscrete(@NotNull DiscreteResourceAmount addend) throws UnrecognizedResourceType {
-        @Nullable ResourceAmount<? extends @NotNull ResourceInterface, ? extends @NotNull Number>
-                augend = get(addend.getResource());
-
-        //TODO: finish this
-        //calculate available sizes here
-
         double
                 remainingMass = getRemaining_mass(),
-                remainingVolume = getRemaining_volume();
+                remainingVolume = getRemaining_volume(),
+                addendMass = addend.getMass(),
+                addendVolume = addend.getVolume(),
+                satisfaction_min = 0;
         if (remainingMass >= 0 && remainingVolume >= 0) {
-            double
-                    desiredAddableMass = addend.getMass(),
-                    desiredAddableVolume = addend.getVolume(),
-                    cappedAddableMass = Math.max(0, Math.min(remainingMass, desiredAddableMass)),
-                    cappedAddableVolume = Math.max(0, Math.min(remainingVolume, desiredAddableVolume)),
-                    massSatisfaction = 1,
-                    volumeSatisfaction = 1;
-            if (desiredAddableMass > 0) {
-                massSatisfaction = cappedAddableMass / desiredAddableMass;
-            }
-            if (desiredAddableVolume > 0) {
-                volumeSatisfaction = cappedAddableVolume / desiredAddableVolume;
-            }
-            double satisfaction = Math.min(massSatisfaction, volumeSatisfaction);
-
-            //for discrete: amount = floor(amount * satisfaction)
-        } else {
-            //no room at all
-            //TODO: return original parameter as remainder
+            satisfaction_min = Math.max(0, Math.min(
+                    getMaxSatisfaction_perParameter(remainingMass, addendMass),
+                    getMaxSatisfaction_perParameter(remainingVolume, addendVolume)));
         }
 
+        int
+                addendCount = addend.getCount(),
+                cappedAddendCount = (int) Math.floor(addendCount * satisfaction_min);
+        @NotNull DiscreteResource resource = addend.getResource();
+        @Nullable ResourceAmount<? extends @NotNull ResourceInterface, ? extends @NotNull Number> augend = get(resource);
         if (augend == null) {
-            //TODO: finish this
-            //put(addend);
-            return;
+            put(new DiscreteResourceAmount(resource, cappedAddendCount));
         } else if (augend instanceof @NotNull DiscreteResourceAmount discreteAugend) {
-            //TODO: finish this
-            //augend + addend
-            return;
+            discreteAugend.add(cappedAddendCount);
         } else {
             throw new UnrecognizedResourceType();
         }
+        return addendCount - cappedAddendCount;
     }
 
     private double addContinuous(@NotNull ContinuousResourceAmount addend) throws UnrecognizedResourceType {
-        @Nullable ResourceAmount<? extends @NotNull ResourceInterface, ? extends @NotNull Number>
-                augend = get(addend.getResource());
-
-        //TODO: finish this
-        //calculate available sizes here
-
         double
                 remainingMass = getRemaining_mass(),
-                remainingVolume = getRemaining_volume();
+                remainingVolume = getRemaining_volume(),
+                addendMass = addend.getMass(),
+                addendVolume = addend.getVolume(),
+                satisfaction_min = 0;
         if (remainingMass >= 0 && remainingVolume >= 0) {
-            double
-                    desiredAddableMass = addend.getMass(),
-                    desiredAddableVolume = addend.getVolume(),
-                    cappedAddableMass = Math.max(0, Math.min(remainingMass, desiredAddableMass)),
-                    cappedAddableVolume = Math.max(0, Math.min(remainingVolume, desiredAddableVolume)),
-                    massSatisfaction = 1,
-                    volumeSatisfaction = 1;
-            if (desiredAddableMass > 0) {
-                massSatisfaction = cappedAddableMass / desiredAddableMass;
-            }
-            if (desiredAddableVolume > 0) {
-                volumeSatisfaction = cappedAddableVolume / desiredAddableVolume;
-            }
-            double satisfaction = Math.min(massSatisfaction, volumeSatisfaction);
-
-            //for continuous: amount *= satisfaction
-        } else {
-            //no room at all
-            //TODO: return original parameter as remainder
+            satisfaction_min = Math.max(0, Math.min(
+                    getMaxSatisfaction_perParameter(remainingMass, addendMass),
+                    getMaxSatisfaction_perParameter(remainingVolume, addendVolume)));
         }
 
+        double cappedAddendMass = addendMass * satisfaction_min;
+        @NotNull ContinuousResource resource = addend.getResource();
+        @Nullable ResourceAmount<? extends @NotNull ResourceInterface, ? extends @NotNull Number> augend = get(resource);
         if (augend == null) {
-            //TODO: finish this
-            //put(addend);
-            return;
+            put(new ContinuousResourceAmount(resource, cappedAddendMass));
         } else if (augend instanceof @NotNull ContinuousResourceAmount continuousAugend) {
-            //TODO: finish this
-            //augend + addend
-            return;
+            continuousAugend.add(cappedAddendMass);
         } else {
             throw new UnrecognizedResourceType();
+        }
+        return addendMass - cappedAddendMass;
+    }
+
+    private double getMaxSatisfaction_perParameter(double remainingParameterLimit, double addendParameter) {
+        if (addendParameter > 0) {
+            double cappedAddendParameter = Math.max(0, Math.min(remainingParameterLimit, addendParameter));
+            return cappedAddendParameter / addendParameter;
+        } else {
+            return 1;
         }
     }
 }

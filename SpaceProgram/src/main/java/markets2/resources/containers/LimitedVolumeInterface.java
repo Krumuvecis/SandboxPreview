@@ -1,7 +1,7 @@
 package markets2.resources.containers;
 
 //
-public interface LimitedVolumeInterface {
+interface LimitedVolumeInterface {
     //
     double getTakenVolume();
 

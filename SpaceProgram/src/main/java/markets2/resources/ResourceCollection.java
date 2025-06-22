@@ -125,9 +125,9 @@ public interface ResourceCollection {
         return null;
     }
 
-    //
+    //directly puts into the set; must check if already contained
     void put(@NotNull ResourceAmount<? extends @NotNull ResourceInterface, ? extends @NotNull Number> amount);
 
-    //
+    //removes, if contained; otherwise does nothing
     void remove(@NotNull ResourceInterface resource);
 }

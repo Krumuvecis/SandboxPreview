@@ -9,7 +9,7 @@ import org.jetbrains.annotations.Nullable;
 import static consoleUtils.stringTools.NumberFormatter.doubleToString;
 
 import markets2.resources.ParticularResources;
-import markets2.resources.containers.Inventory;
+import markets2.person.PersonInventory;
 import markets2.market.MarketHistoryDataPoint;
 import markets2.person.PersonHealth;
 import markets2.person.actions.PersonAction;
@@ -143,7 +143,7 @@ class PeopleInfoPainter implements TextPainterInterface {
         lineCount ++;
 
         //inventory in general
-        @NotNull Inventory inventory = person.getInventory();
+        @NotNull PersonInventory inventory = person.getInventory();
         double
                 inventoryFilledCapacity = inventory.getFilledCapacity(),
                 inventoryMaxCapacity = inventory.getMaximumCapacity(),

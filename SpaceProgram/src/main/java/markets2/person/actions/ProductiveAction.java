@@ -11,10 +11,9 @@ import org.jetbrains.annotations.NotNull;
 import markets2.resources.ContinuousResource;
 import markets2.resources.DiscreteResource;
 import markets2.resources.ParticularResources;
-import markets2.person.skills.PersonSkillType;
-import markets2.person.skills.PersonSkills;
+import markets2.skills.SkillType;
+import markets2.skills.collections.PersonSkills;
 import markets2.person.Person;
-import markets2.World;
 
 //
 public abstract class ProductiveAction<
@@ -61,7 +60,7 @@ public abstract class ProductiveAction<
                         actualYield = maximumYield * (1 - RANDOM_INEFFICIENCY_RATE * RANDOM.nextDouble());
                 person.getInventory().addContinuousResource(ParticularResources.FOOD, actualYield);
 
-                skills.learnSkill(PersonSkillType.GATHERING);
+                skills.learnSkill(SkillType.GATHERING);
 
                 if (person.hasBasket() && RANDOM.nextDouble() < BASKET_BREAK_CHANCE) {
                     person.getInventory().subtractDiscreteResource(ParticularResources.BASKET, 1);
@@ -91,7 +90,7 @@ public abstract class ProductiveAction<
                         actualYield = maximumYield * (1 - RANDOM_INEFFICIENCY_RATE * RANDOM.nextDouble());
                 person.getInventory().addContinuousResource(ParticularResources.STICKS, actualYield);
 
-                skills.learnSkill(PersonSkillType.GATHERING);
+                skills.learnSkill(SkillType.GATHERING);
             }
         }
     }
@@ -130,7 +129,7 @@ public abstract class ProductiveAction<
 
                 //TODO: finish this above
 
-                skills.learnSkill(PersonSkillType.CRAFTING);
+                skills.learnSkill(SkillType.CRAFTING);
             }
         }
     }

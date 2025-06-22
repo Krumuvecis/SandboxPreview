@@ -3,7 +3,8 @@ package markets2.person;
 import org.jetbrains.annotations.NotNull;
 
 import markets2.resources.ParticularResources;
-import markets2.resources.containers.Inventory;
+import markets2.resources.UnrecognizedResourceType;
+import markets2.resources.ResourceAmount.ContinuousResourceAmount;
 import markets2.UpdatableInterface;
 
 //
@@ -16,13 +17,13 @@ public final class PersonNutrition implements UpdatableInterface {
             MAXIMUM_HEALTH_REGEN_RATE = 1; //cap
 
     private final @NotNull PersonHealth health;
-    private final @NotNull Inventory inventory;
+    private final @NotNull PersonInventory inventory;
     private final double
             maxFoodThroughput, //cap
             baseFoodConsumption;
 
     //custom limits
-    PersonNutrition(@NotNull PersonHealth health, @NotNull Inventory inventory,
+    PersonNutrition(@NotNull PersonHealth health, @NotNull PersonInventory inventory,
                     double maxFoodThroughput, double baseFoodConsumption) {
         this.health = health;
         this.inventory = inventory;
@@ -31,7 +32,7 @@ public final class PersonNutrition implements UpdatableInterface {
     }
 
     //default limits
-    PersonNutrition(@NotNull PersonHealth health, @NotNull Inventory inventory) {
+    PersonNutrition(@NotNull PersonHealth health, @NotNull PersonInventory inventory) {
         this(health, inventory, DEFAULT_MAX_FOOD_THROUGHPUT, DEFAULT_BASE_FOOD_CONSUMPTION);
     }
 
@@ -72,25 +73,38 @@ public final class PersonNutrition implements UpdatableInterface {
     }
 
     private void eat() {
-        double
-                availableFood = inventory.getContinuousResourceAmount(ParticularResources.FOOD),
-                baseFoodConsumption = getBaseFoodConsumption(),
-                eatenFood = 0,
-                deltaHealth = 0;
+        //TODO: ideally, should sum up all consumable food and subtract only once
 
-        if (availableFood <= baseFoodConsumption) { //missing food, losing health
-            double missingFood = baseFoodConsumption - availableFood;
-            eatenFood = availableFood;
-            deltaHealth = -missingFood * HEALTH_LOSS_PER_MISSING_FOOD;
-        } else { //abundant food, recovering health
-            double optimalFoodConsumption = getOptimalFoodConsumption();
-            eatenFood = Math.min(optimalFoodConsumption, availableFood);
-            deltaHealth = Math.min(
-                    MAXIMUM_HEALTH_REGEN_RATE,
-                    (eatenFood - baseFoodConsumption) / FOOD_CONSUMPTION_PER_HEALTH_REGEN);
+        double
+                cappedRequiredFood_base = getCappedFoodConsumption(baseFoodConsumption),
+                missingFood_base = baseFoodConsumption - cappedRequiredFood_base;
+        try {
+            missingFood_base += inventory.subtract(new ContinuousResourceAmount(
+                    ParticularResources.FOOD, cappedRequiredFood_base)).getMass();
+        } catch (@NotNull UnrecognizedResourceType e) {
+            throw new RuntimeException(e);
         }
 
-        inventory.subtractContinuousResource(ParticularResources.FOOD, eatenFood);
+        double deltaHealth;
+        if (missingFood_base > 0) { //missing food, losing health
+            deltaHealth = -missingFood_base * HEALTH_LOSS_PER_MISSING_FOOD;
+        } else { //abundant food, recovering health
+            double
+                    missingHealth = health.getMissingHealth(),
+                    uncappedHealingFood = missingHealth * FOOD_CONSUMPTION_PER_HEALTH_REGEN,
+                    cappedHealingFood = Math.max(0, Math.min(
+                            maxFoodThroughput - baseFoodConsumption,
+                            uncappedHealingFood)),
+                    actualHealingFood = cappedHealingFood;
+            try {
+                actualHealingFood -= inventory.subtract(new ContinuousResourceAmount(
+                        ParticularResources.FOOD, cappedHealingFood)).getMass();
+            } catch (@NotNull UnrecognizedResourceType e) {
+                throw new RuntimeException(e);
+            }
+            deltaHealth = actualHealingFood / FOOD_CONSUMPTION_PER_HEALTH_REGEN;
+        }
+
         health.addHealth(deltaHealth);
     }
 }

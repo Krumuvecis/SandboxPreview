@@ -4,7 +4,7 @@ import java.util.Set;
 import java.util.Map;
 import java.util.HashMap;
 
-import markets2.person.skills.PersonSkills;
+import markets2.skills.collections.PersonSkills;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -12,8 +12,7 @@ import markets2.resources.ResourceInterface;
 import markets2.resources.ContinuousResource;
 import markets2.resources.DiscreteResource;
 import markets2.resources.ParticularResources;
-import markets2.resources.containers.Wallet;
-import markets2.resources.containers.Inventory;
+import markets2.Wallet;
 import markets2.TraderInterface;
 import markets2.market.MarketOrder;
 import markets2.market.MarketOrder.MarketOrderContinuous;
@@ -31,7 +30,7 @@ public class Person extends NamedPerson implements TraderInterface {
     private static final double CRAFT_BASKET_BASE_STICKS_CONSUMPTION = 5;
     private final @NotNull World world; //reference
     private final @NotNull Wallet wallet = new Wallet();
-    private final @NotNull Inventory inventory = new Inventory();
+    private final @NotNull PersonInventory inventory = new PersonInventory();
     private final @NotNull PersonHealth health = new PersonHealth();
     private final @NotNull PersonNutrition nutrition;
     private final @NotNull PersonSkills skills;
@@ -69,7 +68,7 @@ public class Person extends NamedPerson implements TraderInterface {
 
     //
     @Override
-    public final @NotNull Inventory getInventory() {
+    public final @NotNull PersonInventory getInventory() {
         return inventory;
     }
 

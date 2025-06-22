@@ -1,11 +1,10 @@
 package markets2;
 
+import markets2.resources.containers.ResourceContainerInterface;
 import org.jetbrains.annotations.NotNull;
 
 import common.NamedInterface;
 import markets2.resources.ResourceInterface;
-import markets2.resources.containers.Wallet;
-import markets2.resources.containers.Inventory;
 import markets2.market.MarketOrder;
 
 //
@@ -14,7 +13,7 @@ public interface TraderInterface extends NamedInterface {
     @NotNull Wallet getWallet();
 
     //
-    @NotNull Inventory getInventory();
+    @NotNull ResourceContainerInterface getInventory();
 
     //
     void removeCompletedSellOrder(@NotNull ResourceInterface resource,
